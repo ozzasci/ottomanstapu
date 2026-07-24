@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Osmanlıca Tapu Terimleri Sözlüğü</title>
     <style>
-        /* CSS Değişkenleri (Tema Yönetimi İçin) */
+        /* CSS Değişkenleri (Tema Yönetimi) */
         :root {
             --bg-color: #f4f7f6;
             --text-color: #333;
@@ -14,7 +14,7 @@
             --card-bg: #fff;
             --card-border: #e0e0e0;
             --primary-color: #3498db;
-            --secondary-color: #2980b9;
+            --arabic-color: #8e44ad;
         }
 
         [data-theme="dark"] {
@@ -25,7 +25,7 @@
             --card-bg: #1e1e1e;
             --card-border: #333;
             --primary-color: #bb86fc;
-            --secondary-color: #3700b3;
+            --arabic-color: #d7bde2;
         }
 
         * {
@@ -47,7 +47,6 @@
             color: var(--header-text);
             padding: 20px;
             text-align: center;
-            position: relative;
         }
 
         .header-controls {
@@ -99,7 +98,7 @@
         .tab-content {
             display: none;
             padding: 20px;
-            max-width: 1000px;
+            max-width: 1100px;
             margin: 0 auto;
         }
 
@@ -124,7 +123,7 @@
             font-size: 16px;
         }
 
-        /* Kaydırılabilir (Swipeable) Kart Konteyneri */
+        /* Kaydırılabilir (Swipeable / Slider) Kart Konteyneri */
         .slider-container {
             display: flex;
             overflow-x: auto;
@@ -140,7 +139,7 @@
 
         /* Terim Kartları */
         .card {
-            flex: 0 0 85%; /* Mobilde genişlik */
+            flex: 0 0 85%; /* Mobilde görünüm */
             scroll-snap-align: center;
             background-color: var(--card-bg);
             border: 1px solid var(--card-border);
@@ -157,24 +156,34 @@
         }
 
         @media (min-width: 1024px) {
-            .card { flex: 0 0 30%; } /* Masaüstü */
+            .card { flex: 0 0 31%; } /* Masaüstü */
         }
 
         .card h3 {
             color: var(--primary-color);
-            margin-bottom: 10px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            font-size: 20px;
         }
 
-        .card p { line-height: 1.5; margin-bottom: 15px; }
-        .card .category { font-size: 12px; color: #888; text-transform: uppercase; }
+        /* Arapça / Osmanlıca Yazılış Alanı */
+        .arabic-text {
+            font-size: 28px;
+            text-align: right;
+            margin: 12px 0;
+            color: var(--arabic-color);
+            font-family: 'Traditional Arabic', 'Amiri', 'Scheherazade New', serif;
+            font-weight: bold;
+        }
+
+        .card p { line-height: 1.5; margin-bottom: 15px; font-size: 15px; }
+        .card .category { font-size: 12px; color: #888; text-transform: uppercase; font-weight: bold; }
         
         .fav-btn {
             background: none;
             border: none;
-            font-size: 20px;
+            font-size: 22px;
             cursor: pointer;
             color: #ccc;
         }
@@ -199,6 +208,7 @@
             color: var(--text-color);
             cursor: pointer;
             text-align: left;
+            font-size: 15px;
             transition: 0.2s;
         }
 
@@ -215,6 +225,7 @@
             cursor: pointer;
             margin-top: 15px;
             font-weight: bold;
+            font-size: 16px;
         }
     </style>
 </head>
@@ -237,13 +248,13 @@
     <!-- SÖZLÜK SEKMESİ -->
     <div id="sozluk" class="tab-content active">
         <div class="search-container">
-            <input type="text" id="searchInput" placeholder="Terim veya anlam içinde ara (Türkçe karakter duyarlı)...">
+            <input type="text" id="searchInput" placeholder="Terim, Osmanlıca yazılış veya anlam içinde ara...">
             <select id="categorySelect">
                 <option value="Tümü">Tüm Kategoriler</option>
             </select>
         </div>
         <div id="dictionaryResults" class="slider-container">
-            <!-- Kartlar buraya JS ile yüklenecek -->
+            <!-- Kartlar JS ile Yüklenecek -->
         </div>
     </div>
 
@@ -271,25 +282,44 @@
         
         <div id="quiz-result" style="display: none; margin-top: 20px;">
             <h3>Test Tamamlandı!</h3>
-            <p id="score-text"></p>
-            <button id="start-quiz-btn" onclick="startQuiz()">Yeniden Başla</button>
+            <p id="score-text" style="font-size:18px; margin: 15px 0;"></p>
+            <button onclick="startQuiz()">Yeniden Başla</button>
         </div>
     </div>
 
     <script>
-        // --- 1. VERİ SETİ BURAYA EKLENECEK ---
-        // Kendi geniş veritabanını buradaki örnek formata uygun olarak değiştirebilirsin.
+        // --- 1. TÜM KELİMELER, KATEGORİLER VE ARAPÇA/OSMANLICA METİNLER VERİ SETİ ---
         const termData = [
-            { terim: "Arz", anlam: "Bir yeri veya araziyi sunma, gösterme.", kategori: "Arazi" },
-            { terim: "Defter-i Hakani", anlam: "Osmanlı'da tapu kayıtlarının tutulduğu ana defter.", kategori: "Hukuk" },
-            { terim: "Tahrir", anlam: "Vergi, nüfus ve arazi sayımı.", kategori: "Hukuk" },
-            { terim: "Miri Arazi", anlam: "Mülkiyeti devlete ait olan topraklar.", kategori: "Arazi" },
-            { terim: "Vakıf", anlam: "Dini veya sosyal bir hizmet için ayrılan mülk.", kategori: "Hukuk" },
-            { terim: "Dönüm", anlam: "Yaklaşık 919 metrekarelik alan ölçüsü.", kategori: "Matematik" },
-            { terim: "Zira", anlam: "Yaklaşık 75-90 cm arası uzunluk ölçüsü.", kategori: "Matematik" },
-            { terim: "Muharrem", anlam: "Hicri takvimin ilk ayı.", kategori: "Takvim" },
-            { terim: "Mart", anlam: "Rumi takvimin ilk ayı.", kategori: "Takvim" },
-            { terim: "İfraz", anlam: "Bir parseli birden fazla parsele bölme işlemi.", kategori: "Arazi" }
+            { terim: "Arz", osmanlica: "عرض", anlam: "Bir yeri, durumu veya araziyi yetkili makama sunma, bildirme veya gösterme.", kategori: "Tapu & İşlem" },
+            { terim: "Defter-i Hakani", osmanlica: "دفتر خاقانی", anlam: "Osmanlı Devleti'nde arazi, tapu ve mülk kayıtlarının tutulduğu ana devlet arşivi ve idaresi.", kategori: "Kurum & Hukuk" },
+            { terim: "Tahrir", osmanlica: "تحرير", anlam: "Eyaletlerdeki vergi yükümlülerini, arazi mülkiyetlerini ve gelirleri kaydetmek amacıyla yapılan resmi sayım işlemi.", kategori: "Hukuk & Kayıt" },
+            { terim: "Miri Arazi", osmanlica: "میری أراضي", anlam: "Mülkiyeti devlete (hazineye) ait olan, kullanım hakkı kişilere devredilebilen topraklar.", kategori: "Arazi Türleri" },
+            { terim: "Mülk Arazi", osmanlica: "ملك أراضي", anlam: "Kullanım ve mülkiyet hakkı tamamen şahıslara ait olan serbest topraklar.", kategori: "Arazi Türleri" },
+            { terim: "Vakıf Arazi", osmanlica: "وقف أراضي", anlam: "Geliri dini, hayri veya sosyal bir hizmete tahsis edilmiş mülk ve araziler.", kategori: "Arazi Türleri" },
+            { terim: "Metruk Arazi", osmanlica: "متروك أراضي", anlam: "Yol, meydan, harman yeri gibi kamunun ortak kullanımına bırakılmış alanlar.", kategori: "Arazi Türleri" },
+            { terim: "Mevat Arazi", osmanlica: "موات أراضي", anlam: "Yerleşim yerlerine uzak, imar edilmemiş, çorak ve kimsenin mülkiyetinde olmayan ölü topraklar.", kategori: "Arazi Türleri" },
+            { terim: "Tapu Senedi", osmanlica: "طابو سندی", anlam: "Bir arazinin veya taşınmazın tasarruf hakkının kime ait olduğunu gösteren resmi belge.", kategori: "Tapu & İşlem" },
+            { terim: "Yoklama Defteri", osmanlica: "يوقلمه دفتری", anlam: "Arazi sahiplerinin ve ellerindeki tapu kayıtlarının yerinde doğrulanması amacıyla tutulan defterler.", kategori: "Kayıt & Arşiv" },
+            { terim: "Kocan", osmanlica: "کوچان", anlam: "Tapu senedinin idarede kalan resmi dip koçanı veya sureti.", kategori: "Tapu & İşlem" },
+            { terim: "İfraz", osmanlica: "إفراز", anlam: "Tek bir parsel veya arazinin kanuni yollarla birden fazla müstakil parsele bölünmesi işlemi.", kategori: "Arazi İşlemleri" },
+            { terim: "Tevhit", osmanlica: "توحيد", anlam: "Birbirine bitişik birden fazla arazinin veya parselin tek bir tapuda birleştirilmesi.", kategori: "Arazi İşlemleri" },
+            { terim: "Ferağ", osmanlica: "فراغ", anlam: "Bir kimsenin mülkiyetindeki veya tasarrufundaki arazinin hakkını başkasına devretmesi.", kategori: "Tapu & İşlem" },
+            { terim: "İntikal", osmanlica: "إنتقال", anlam: "Vefat eden bir kimsenin taşınmaz tasarruf haklarının kanuni mirasçılarına geçmesi.", kategori: "Hukuk & Miras" },
+            { terim: "Şufa Hakkı", osmanlica: "شفعة", anlam: "Hisseli bir taşınmazda hisse dışarıya satılırken diğer hissedarların öncelikli satın alma hakkı (Önalım).", kategori: "Hukuk & Miras" },
+            { terim: "Gedik", osmanlica: "كديد", anlam: "Bir dükkan veya imalathanede zanaat icra etme ve oradaki edevatı kullanma hakkı gösteren özel mülkiyet türü.", kategori: "Hukuk & Esnaf" },
+            { terim: "Rumi Takvim", osmanlica: "رومي تقویم", anlam: "Güneş yılı esasına dayanan, Osmanlı'da mali işlerde ve tapu kayıtlarında kullanılan resmi takvim.", kategori: "Takvim" },
+            { terim: "Hicri Takvim", osmanlica: "هجري تقویم", anlam: "Ay yılı esasına dayanan, Hicret'i başlangıç kabul eden dini ve resmi takvim.", kategori: "Takvim" },
+            { terim: "Mart", osmanlica: "مارت", anlam: "Rumi takvime göre yılın ilk ayı.", kategori: "Takvim" },
+            { terim: "Teşrin-i Evvel", osmanlica: "تشرين أول", anlam: "Rumi takvimde Ekim ayına karşılık gelen dönem.", kategori: "Takvim" },
+            { terim: "Teşrin-i Sani", osmanlica: "تشرين ثاني", anlam: "Rumi takvimde Kasım ayına karşılık gelen dönem.", kategori: "Takvim" },
+            { terim: "Kanun-ı Evvel", osmanlica: "کانون أول", anlam: "Rumi takvimde Aralık ayına karşılık gelen dönem.", kategori: "Takvim" },
+            { terim: "Kanun-ı Sani", osmanlica: "کانون ثاني", anlam: "Rumi takvimde Ocak ayına karşılık gelen dönem.", kategori: "Takvim" },
+            { terim: "Dönüm", osmanlica: "دونوم", anlam: "Eski ölçü sisteminde yaklaşık 919 metrekarelik alan birimi (Yeni dönüm 1000m²'dir).", kategori: "Ölçü Birimleri" },
+            { terim: "Arşın", osmanlica: "آرشين", anlam: "Yaklaşık 68-75 cm arasında değişen geleneksel uzunluk ölçüsü birimi.", kategori: "Ölçü Birimleri" },
+            { terim: "Zira", osmanlica: "ذراع", anlam: "Mimarlık ve arazi ölçümlerinde kullanılan, yaklaşık 75,8 cm'ye karşılık gelen uzunluk ölçüsü.", kategori: "Ölçü Birimleri" },
+            { terim: "Kulaç", osmanlica: "قلاچ", anlam: "Açılmış iki kolun parmak uçları arasındaki mesafe (yaklaşık 1.89 metre).", kategori: "Ölçü Birimleri" },
+            { terim: "Okka", osmanlica: "أوقة", anlam: "1282 grama karşılık gelen geleneksel ağırlık birimi.", kategori: "Ölçü Birimleri" },
+            { terim: "Dirhem", osmanlica: "درهم", anlam: "Okkanın 400'de birine eşit olan (yaklaşık 3.2 gram) ağırlık birimi.", kategori: "Ölçü Birimleri" }
         ];
 
         // --- 2. TEMA VE PAYLAŞIM AYARLARI ---
@@ -347,12 +377,17 @@
         function createCardHTML(item) {
             const isFav = favorites.includes(item.terim) ? 'active' : '';
             const starIcon = favorites.includes(item.terim) ? '★' : '☆';
+            
+            // Arapça / Osmanlıca metin görünümü kontrolü
+            const arabicDisplay = item.osmanlica ? `<div class="arabic-text" dir="rtl">${item.osmanlica}</div>` : '';
+
             return `
                 <div class="card">
                     <div>
                         <h3>${item.terim} 
                             <button class="fav-btn ${isFav}" onclick="toggleFavorite('${item.terim}')">${starIcon}</button>
                         </h3>
+                        ${arabicDisplay}
                         <p>${item.anlam}</p>
                     </div>
                     <span class="category">📁 ${item.kategori}</span>
@@ -370,7 +405,7 @@
             const favData = termData.filter(item => favorites.includes(item.terim));
             
             if (favData.length === 0) {
-                container.innerHTML = "<p>Henüz favorilere eklenmiş bir terim bulunmuyor.</p>";
+                container.innerHTML = "<p style='padding:20px;'>Henüz favorilere eklenmiş bir terim bulunmuyor.</p>";
             } else {
                 container.innerHTML = favData.map(item => createCardHTML(item)).join('');
             }
@@ -386,7 +421,7 @@
             categorySelect.appendChild(option);
         });
 
-        // Arama ve Filtreleme Dinleyicileri (Türkçe karakter uyumlu)
+        // Arama ve Filtreleme Dinleyicileri (Türkçe karakter ve Osmanlıca uyumlu)
         document.getElementById('searchInput').addEventListener('input', filterData);
         document.getElementById('categorySelect').addEventListener('change', filterData);
 
@@ -396,7 +431,8 @@
 
             const filtered = termData.filter(item => {
                 const matchText = item.terim.toLocaleLowerCase('tr-TR').includes(searchText) || 
-                                  item.anlam.toLocaleLowerCase('tr-TR').includes(searchText);
+                                  item.anlam.toLocaleLowerCase('tr-TR').includes(searchText) ||
+                                  (item.osmanlica && item.osmanlica.includes(searchText));
                 const matchCat = selectedCat === "Tümü" || item.kategori === selectedCat;
                 return matchText && matchCat;
             });
@@ -430,7 +466,10 @@
             optionsArea.innerHTML = '';
             
             let currentItem = quizQuestions[currentQuestionIndex];
-            document.getElementById('question-text').textContent = `Soru ${currentQuestionIndex + 1}/10: "${currentItem.terim}" teriminin anlamı nedir?`;
+            
+            // Soru başlığında Osmanlıcası varsa parantez içinde gösterme
+            const osmanlicaEk = currentItem.osmanlica ? ` (${currentItem.osmanlica})` : '';
+            document.getElementById('question-text').textContent = `Soru ${currentQuestionIndex + 1}/10: "${currentItem.terim}${osmanlicaEk}" teriminin anlamı nedir?`;
 
             // Şıkları oluştur (1 doğru, 3 yanlış)
             let options = [currentItem.anlam];
@@ -438,7 +477,7 @@
             for(let i=0; i<3 && i<wrongOptions.length; i++) {
                 options.push(wrongOptions[i].anlam);
             }
-            options = options.sort(() => 0.5 - Math.random()); // Şıkları karıştır
+            options = options.sort(() => 0.5 - Math.random());
 
             options.forEach(opt => {
                 let btn = document.createElement('button');
@@ -451,7 +490,7 @@
 
         function checkAnswer(selectedBtn, selectedText, correctText) {
             const allBtns = document.querySelectorAll('.quiz-option');
-            allBtns.forEach(btn => btn.disabled = true); // Diğer şıklara tıklanmasın
+            allBtns.forEach(btn => btn.disabled = true);
 
             if (selectedText === correctText) {
                 selectedBtn.classList.add('correct');
@@ -462,7 +501,6 @@
                 selectedBtn.classList.add('wrong');
                 document.getElementById('quiz-feedback').textContent = "Yanlış Cevap.";
                 document.getElementById('quiz-feedback').style.color = "#e74c3c";
-                // Doğru şıkkı yeşil yap
                 allBtns.forEach(btn => {
                     if(btn.textContent === correctText) btn.classList.add('correct');
                 });
