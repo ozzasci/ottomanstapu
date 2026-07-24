@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Osmanlıca Tapu Terimleri Sözlüğü</title>
     <button id="themeToggle" class="theme-btn">🌙 Gece Modu</button>
+    <button onclick="shareOnWhatsApp()" class="share-btn">📲 WhatsApp'ta Paylaş</button>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
@@ -423,6 +424,16 @@ body.dark-theme input {
 
 .theme-btn:hover {
     background-color: #666;
+}
+        .share-btn {
+    background-color: #25D366; /* WhatsApp Yeşili */
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    margin-top: 15px;
 }
     </style>
 </head>
@@ -1208,6 +1219,11 @@ themeBtn.addEventListener('click', () => {
         themeBtn.textContent = '🌙 Gece Modu';
     }
 });
+        function shareOnWhatsApp() {
+    const url = window.location.href; // Uygulamanın anlık linkini otomatik alır
+    const message = `Osmanlıca Tapu Terimleri Sözlüğü'ne göz at! Harika bir kaynak: ${url}`;
+    window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(message)}`);
+}
     </script>
 </body>
 </html>
