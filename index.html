@@ -4,1226 +4,489 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Osmanlıca Tapu Terimleri Sözlüğü</title>
-    <button id="themeToggle" class="theme-btn">🌙 Gece Modu</button>
-    <button onclick="shareOnWhatsApp()" class="share-btn">📲 WhatsApp'ta Paylaş</button>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        /* CSS Değişkenleri (Tema Yönetimi İçin) */
+        :root {
+            --bg-color: #f4f7f6;
+            --text-color: #333;
+            --header-bg: #2c3e50;
+            --header-text: #fff;
+            --card-bg: #fff;
+            --card-border: #e0e0e0;
+            --primary-color: #3498db;
+            --secondary-color: #2980b9;
+        }
+
+        [data-theme="dark"] {
+            --bg-color: #121212;
+            --text-color: #e0e0e0;
+            --header-bg: #1f1f1f;
+            --header-text: #e0e0e0;
+            --card-bg: #1e1e1e;
+            --card-border: #333;
+            --primary-color: #bb86fc;
+            --secondary-color: #3700b3;
+        }
+
         * {
+            box-sizing: border-box;
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-        
-        :root {
-            --primary-color: #2c3e50;
-            --secondary-color: #3498db;
-            --accent-color: #e74c3c;
-            --light-color: #ecf0f1;
-            --dark-color: #2c3e50;
-        }
-        
+
         body {
-            background-color: #f5f7fa;
-            color: #333;
-            line-height: 1.6;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: background-color 0.3s, color 0.3s;
         }
-        
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        
+
+        /* Üst Başlık ve Butonlar */
         header {
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-            color: white;
-            padding: 30px 0;
-            border-radius: 0 0 15px 15px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-            margin-bottom: 30px;
-        }
-        
-        .header-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-        
-        .logo {
-            font-size: 28px;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-        }
-        
-        .logo i {
-            margin-right: 10px;
-            color: #f1c40f;
-        }
-        
-        .search-container {
-            flex: 1;
-            max-width: 500px;
-            margin: 20px auto;
-        }
-        
-        .search-box {
-            display: flex;
-            background: white;
-            border-radius: 50px;
-            overflow: hidden;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        }
-        
-        .search-box input {
-            flex: 1;
-            border: none;
-            padding: 15px 20px;
-            font-size: 16px;
-            outline: none;
-        }
-        
-        .search-box button {
-            background: var(--secondary-color);
-            color: white;
-            border: none;
-            padding: 0 25px;
-            cursor: pointer;
-            font-size: 18px;
-        }
-        
-        .search-box button:hover {
-            background: #2980b9;
-        }
-        
-        .nav-tabs {
-            display: flex;
-            background: white;
-            border-radius: 10px;
-            overflow: hidden;
-            margin-bottom: 30px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-        }
-        
-        .tab {
-            flex: 1;
+            background-color: var(--header-bg);
+            color: var(--header-text);
+            padding: 20px;
             text-align: center;
-            padding: 15px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.3s;
-            border-bottom: 3px solid transparent;
+            position: relative;
         }
-        
-        .tab.active {
-            color: var(--secondary-color);
-            border-bottom: 3px solid var(--secondary-color);
-            background-color: #f8f9fa;
-        }
-        
-        .tab:hover {
-            background-color: #f8f9fa;
-        }
-        
-        .filter-container {
+
+        .header-controls {
             display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 15px;
             flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .theme-btn { background-color: #444; color: #fff; }
+        .theme-btn:hover { background-color: #666; }
+        
+        .share-btn { background-color: #25D366; color: #fff; }
+        .share-btn:hover { background-color: #20b858; }
+
+        /* Sekme (Tab) Menüsü */
+        .tabs {
+            display: flex;
+            justify-content: center;
+            background-color: var(--card-bg);
+            border-bottom: 2px solid var(--card-border);
+        }
+
+        .tab-btn {
+            padding: 15px 20px;
+            cursor: pointer;
+            border: none;
+            background: none;
+            color: var(--text-color);
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .tab-btn.active {
+            border-bottom: 3px solid var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        .tab-content {
+            display: none;
+            padding: 20px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Arama ve Filtreleme */
+        .search-container {
+            display: flex;
+            flex-direction: column;
             gap: 10px;
             margin-bottom: 20px;
         }
 
-        .filter-btn {
-            padding: 8px 15px;
-            background: white;
-            color: var(--secondary-color);
-            border: 1.5px solid var(--secondary-color);
-            border-radius: 20px;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: 600;
-            transition: all 0.3s;
-        }
-
-        .filter-btn.active, .filter-btn:hover {
-            background: var(--secondary-color);
-            color: white;
-        }
-
-        .content {
-            display: none;
-            background: white;
-            border-radius: 15px;
-            padding: 30px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-            min-height: 500px;
-        }
-        
-        .content.active {
-            display: block;
-            animation: fadeIn 0.5s;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        
-        .terms-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 20px;
-            margin-top: 20px;
-        }
-        
-        .term-card {
-            background: white;
-            border-radius: 10px;
-            padding: 20px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-            border-left: 5px solid var(--secondary-color);
-            transition: transform 0.3s, box-shadow 0.3s;
-            position: relative;
-        }
-        
-        .term-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-        }
-        
-        .term-card.favorite {
-            border-left-color: var(--accent-color);
-        }
-        
-        .term-osmanlica {
-            font-size: 24px;
-            font-weight: 700;
-            color: var(--primary-color);
-            margin-bottom: 10px;
-            direction: rtl;
-        }
-        
-        .term-meaning {
-            color: #555;
-            margin-bottom: 15px;
+        input, select {
+            padding: 12px;
+            border: 1px solid var(--card-border);
+            border-radius: 8px;
+            background-color: var(--card-bg);
+            color: var(--text-color);
             font-size: 16px;
         }
-        
-        .term-latin {
-            color: #777;
-            font-style: italic;
-            margin-bottom: 10px;
-            font-size: 14px;
-        }
-        
-        .favorite-btn {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: none;
-            border: none;
-            color: #ddd;
-            font-size: 18px;
-            cursor: pointer;
-            transition: color 0.3s, transform 0.2s;
-            padding: 4px;
+
+        /* Kaydırılabilir (Swipeable) Kart Konteyneri */
+        .slider-container {
             display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 44px;
-            height: 44px;
-            border-radius: 50%;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            gap: 15px;
+            padding-bottom: 15px;
+            scrollbar-width: none; /* Firefox */
         }
 
-        .favorite-btn:hover {
-            color: #ffc107;
-            background-color: rgba(255, 193, 7, 0.1);
-            transform: scale(1.1);
+        .slider-container::-webkit-scrollbar {
+            display: none; /* Chrome, Safari */
         }
 
-        .favorite-btn.active {
-            color: var(--accent-color);
-        }
-
-        .favorite-btn.active:hover {
-            color: #c0392b;
-            background-color: rgba(231, 76, 60, 0.1);
-        }
-        
-        .quiz-container {
-            max-width: 800px;
-            margin: 0 auto;
-        }
-        
-        .quiz-question {
-            font-size: 22px;
-            margin-bottom: 30px;
-            color: var(--primary-color);
-        }
-        
-        .quiz-options {
+        /* Terim Kartları */
+        .card {
+            flex: 0 0 85%; /* Mobilde genişlik */
+            scroll-snap-align: center;
+            background-color: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            justify-content: space-between;
+        }
+
+        @media (min-width: 768px) {
+            .card { flex: 0 0 45%; } /* Tablet */
+        }
+
+        @media (min-width: 1024px) {
+            .card { flex: 0 0 30%; } /* Masaüstü */
+        }
+
+        .card h3 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card p { line-height: 1.5; margin-bottom: 15px; }
+        .card .category { font-size: 12px; color: #888; text-transform: uppercase; }
+        
+        .fav-btn {
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: #ccc;
+        }
+        .fav-btn.active { color: #f1c40f; }
+
+        /* Bilgi Testi (Quiz) */
+        .quiz-container {
+            background-color: var(--card-bg);
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid var(--card-border);
         }
         
         .quiz-option {
-            padding: 15px;
-            background: #f8f9fa;
-            border: 2px solid #e9ecef;
-            border-radius: 10px;
+            display: block;
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 10px;
+            border: 1px solid var(--card-border);
+            border-radius: 5px;
+            background-color: var(--bg-color);
+            color: var(--text-color);
             cursor: pointer;
-            transition: all 0.3s;
+            text-align: left;
+            transition: 0.2s;
         }
-        
-        .quiz-option:hover {
-            background: #e9ecef;
-            border-color: var(--secondary-color);
-        }
-        
-        .quiz-option.correct {
-            background: #d4edda !important;
-            border-color: #c3e6cb !important;
-            color: #155724 !important;
-            font-weight: 600;
-        }
-        
-        .quiz-option.wrong {
-            background: #f8d7da !important;
-            border-color: #f5c6cb !important;
-            color: #721c24 !important;
-        }
-        
-        .quiz-result {
-            text-align: center;
-            padding: 40px;
-            display: none;
-        }
-        
-        .quiz-result h2 {
-            color: var(--primary-color);
-            margin-bottom: 20px;
-        }
-        
-        .quiz-score {
-            font-size: 60px;
-            font-weight: 700;
-            color: var(--secondary-color);
-            margin: 20px 0;
-        }
-        
-        .stats-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-        
-        .stat-card {
-            background: white;
-            border-radius: 10px;
-            padding: 25px;
-            text-align: center;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-        }
-        
-        .stat-card i {
-            font-size: 40px;
-            color: var(--secondary-color);
-            margin-bottom: 15px;
-        }
-        
-        .stat-number {
-            font-size: 36px;
-            font-weight: 700;
-            color: var(--primary-color);
-            margin: 10px 0;
-        }
-        
-        .stat-label {
-            color: #777;
-            font-size: 14px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-        
-        footer {
-            text-align: center;
-            padding: 30px 0;
-            color: #777;
-            margin-top: 50px;
-            border-top: 1px solid #eee;
-        }
-        
-        @media (max-width: 768px) {
-            .header-content {
-                flex-direction: column;
-                text-align: center;
-            }
-            
-            .search-container {
-                width: 100%;
-                margin: 20px 0;
-            }
-            
-            .terms-container {
-                grid-template-columns: 1fr;
-            }
-            
-            .nav-tabs {
-                flex-direction: row;
-                flex-wrap: wrap;
-            }
-            
-            .tab {
-                flex: 0 0 50%;
-                border-bottom: 1px solid #eee;
-            }
-            
-            .filter-container {
-                flex-wrap: nowrap;
-                overflow-x: auto;
-                padding-bottom: 10px;
-                -webkit-overflow-scrolling: touch;
-            }
-            
-            .filter-btn {
-                flex-shrink: 0;
-            }
-        }
-        /* Karanlık tema aktifken devreye girecek renkler */
-body.dark-theme {
-    background-color: #121212;
-    color: #e0e0e0;
-}
 
-/* Kendi kullandığın div sınıflarına göre (örneğin .card, .container) buraları güncelleyebilirsin */
-body.dark-theme .container, body.dark-theme .category-btn {
-    background-color: #1e1e1e;
-    border-color: #333;
-    color: #e0e0e0;
-}
-
-body.dark-theme input {
-    background-color: #333;
-    color: #fff;
-    border: 1px solid #555;
-}
-
-.theme-btn {
-    padding: 8px 12px;
-    cursor: pointer;
-    background-color: #444;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    font-weight: bold;
-    transition: 0.3s;
-}
-
-.theme-btn:hover {
-    background-color: #666;
-}
-        .share-btn {
-    background-color: #25D366; /* WhatsApp Yeşili */
-    color: white;
-    padding: 10px 15px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-weight: bold;
-    margin-top: 15px;
-}
+        .quiz-option:hover { background-color: var(--card-border); }
+        .quiz-option.correct { background-color: #2ecc71 !important; color: white; }
+        .quiz-option.wrong { background-color: #e74c3c !important; color: white; }
+        
+        #next-question-btn, #start-quiz-btn {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 15px;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
+
     <header>
-        <div class="container">
-            <div class="header-content">
-                <div class="logo">
-                    <i class="fas fa-book"></i>
-                    <span>Osmanlıca Tapu Terimleri Sözlüğü</span>
-                </div>
-                <div class="search-container">
-                    <div class="search-box">
-                        <input type="text" id="searchInput" placeholder="Osmanlıca terim veya anlamını arayın...">
-                        <button id="searchBtn"><i class="fas fa-search"></i></button>
-                    </div>
-                </div>
-            </div>
+        <h1>📜 Osmanlıca Tapu Terimleri Sözlüğü</h1>
+        <div class="header-controls">
+            <button id="themeToggle" class="btn theme-btn">🌙 Gece Modu</button>
+            <button onclick="shareOnWhatsApp()" class="btn share-btn">📲 WhatsApp'ta Paylaş</button>
         </div>
     </header>
-    
-    <div class="container">
-        <div class="nav-tabs">
-            <div class="tab active" data-tab="all-terms">Tüm Terimler</div>
-            <div class="tab" data-tab="favorites">Favorilerim</div>
-            <div class="tab" data-tab="quiz">Bilgi Testi</div>
-            <div class="tab" data-tab="stats">İstatistikler</div>
+
+    <div class="tabs">
+        <button class="tab-btn active" onclick="openTab('sozluk')">🔍 Sözlük</button>
+        <button class="tab-btn" onclick="openTab('favoriler')">⭐ Favoriler</button>
+        <button class="tab-btn" onclick="openTab('quiz')">🧠 Bilgi Testi</button>
+    </div>
+
+    <!-- SÖZLÜK SEKMESİ -->
+    <div id="sozluk" class="tab-content active">
+        <div class="search-container">
+            <input type="text" id="searchInput" placeholder="Terim veya anlam içinde ara (Türkçe karakter duyarlı)...">
+            <select id="categorySelect">
+                <option value="Tümü">Tüm Kategoriler</option>
+            </select>
         </div>
-        
-        <div class="filter-container" id="filterContainer">
-            <!-- Filtre butonları JavaScript ile dinamik eklenecek -->
-        </div>
-        
-        <div class="content active" id="all-terms">
-            <h2>Tüm Osmanlıca Tapu Terimleri</h2>
-            <div class="terms-container" id="termsList">
-                <!-- Terim kartları JavaScript ile eklenecek -->
-            </div>
-        </div>
-        
-        <div class="content" id="favorites">
-            <h2>Favori Terimlerim</h2>
-            <div class="terms-container" id="favoritesList">
-                <!-- Favori terimler JavaScript ile eklenecek -->
-            </div>
-        </div>
-        
-        <div class="content" id="quiz">
-            <div class="quiz-container">
-                <h2>Osmanlıca Tapu Terimleri Bilgi Testi</h2>
-                <div id="quizQuestionContainer">
-                    <!-- Quiz soruları JavaScript ile eklenecek -->
-                </div>
-                <div class="quiz-result" id="quizResult">
-                    <h2>Test Tamamlandı!</h2>
-                    <div class="quiz-score" id="quizScore">0/10</div>
-                    <p id="quizMessage"></p>
-                    <button id="restartQuiz" class="filter-btn" style="margin-top: 20px; padding: 10px 30px;">Testi Tekrar Başlat</button>
-                </div>
-            </div>
-        </div>
-        
-        <div class="content" id="stats">
-            <h2>Öğrenme İstatistikleriniz</h2>
-            <div class="stats-container">
-                <div class="stat-card">
-                    <i class="fas fa-book"></i>
-                    <div class="stat-number" id="totalTerms">0</div>
-                    <div class="stat-label">Toplam Terim</div>
-                </div>
-                <div class="stat-card">
-                    <i class="fas fa-star"></i>
-                    <div class="stat-number" id="favoriteCount">0</div>
-                    <div class="stat-label">Favori Terim</div>
-                </div>
-                <div class="stat-card">
-                    <i class="fas fa-check-circle"></i>
-                    <div class="stat-number" id="quizScoreStat">0</div>
-                    <div class="stat-label">En Yüksek Test Puanı</div>
-                </div>
-                <div class="stat-card">
-                    <i class="fas fa-history"></i>
-                    <div class="stat-number" id="quizTaken">0</div>
-                    <div class="stat-label">Test Sayısı</div>
-                </div>
-            </div>
-            <h3 style="margin-top: 40px;">Son Test Sonuçları</h3>
-            <div id="recentQuizResults">
-                <!-- Son test sonuçları JavaScript ile eklenecek -->
-            </div>
+        <div id="dictionaryResults" class="slider-container">
+            <!-- Kartlar buraya JS ile yüklenecek -->
         </div>
     </div>
-    
-    <footer>
-        <div class="container">
-            <p>Osmanlıca Tapu Terimleri Sözlüğü - Tapu ve Kadastro Genel Müdürlüğü Arşiv Dairesi Başkanlığı Kaynaklı</p>
-            <p style="margin-top: 10px;">© 2025 - Tüm hakları saklıdır.</p>
+
+    <!-- FAVORİLER SEKMESİ -->
+    <div id="favoriler" class="tab-content">
+        <h2>⭐ Favori Terimleriniz</h2>
+        <p style="margin-bottom:15px; font-size:14px; color:#888;">Favoriye eklediğiniz terimler cihazınıza kaydedilir.</p>
+        <div id="favoritesResults" class="slider-container">
+            <!-- Favori Kartları -->
         </div>
-    </footer>
-    
+    </div>
+
+    <!-- BİLGİ TESTİ SEKMESİ -->
+    <div id="quiz" class="tab-content">
+        <h2>Bilgi Testi (Quiz)</h2>
+        <p>Öğrendiğiniz terimleri pekiştirmek için 10 soruluk rastgele teste katılın.</p>
+        <button id="start-quiz-btn" onclick="startQuiz()">Testi Başlat</button>
+        
+        <div id="quiz-area" class="quiz-container" style="display: none; margin-top: 20px;">
+            <h3 id="question-text" style="margin-bottom: 15px; color: var(--primary-color);"></h3>
+            <div id="options-area"></div>
+            <p id="quiz-feedback" style="margin-top: 10px; font-weight: bold;"></p>
+            <button id="next-question-btn" style="display: none;" onclick="nextQuestion()">Sonraki Soru</button>
+        </div>
+        
+        <div id="quiz-result" style="display: none; margin-top: 20px;">
+            <h3>Test Tamamlandı!</h3>
+            <p id="score-text"></p>
+            <button id="start-quiz-btn" onclick="startQuiz()">Yeniden Başla</button>
+        </div>
+    </div>
+
     <script>
-        const osmanlicaTerms = [
-            { id: 1, osmanlica: "احكام", latin: "Ahkâm", meaning: "Hükümler", category: "Hukuk" },
-            { id: 2, osmanlica: "اخذ و قبض", latin: "Ahz u kabz", meaning: "Her iki sözcük, almak anlamına gelir", category: "Genel" },
-            { id: 3, osmanlica: "اخذ و اعطا", latin: "Ahz u itâ", meaning: "Alıp verme", category: "Genel" },
-            { id: 4, osmanlica: "عقار", latin: "Akâr", meaning: "Gayrimenkullerden kirâ yoluyla sağlanan gelir", category: "Gayrimenkul" },
-            { id: 5, osmanlica: "عقارات", latin: "Akârât", meaning: "Gelir sağlayan gayrimenkuller", category: "Gayrimenkul" },
-            { id: 6, osmanlica: "عقارات وقفيه", latin: "Akârât-t Vakfiyye", meaning: "Vakıf gayrimenkuller; evler, dükkânlar ile bunların getirdiği gelir", category: "Vakıf" },
-            { id: 7, osmanlica: "جِهَا", latin: "Akçe", meaning: "Osmanlı döneminde gümüş para cinsi ve birimi", category: "Finans" },
-            { id: 8, osmanlica: "عقد", latin: "Akid", meaning: "Sözleşme, bir sözleşmede taraf olan kişi", category: "Hukuk" },
-            { id: 9, osmanlica: "بُعْر", latin: "Âmm", meaning: "Genel, umumî, herkese ait", category: "Genel" },
-            { id: 10, osmanlica: "عامه املاكى", latin: "Âmme emlaku", meaning: "Kamu taşınmaz malları", category: "Kamu" },
-            { id: 11, osmanlica: "عام و شامل", latin: "Âmm ve şâmil", meaning: "Umumi ve kapsamlı", category: "Genel" },
-            { id: 12, osmanlica: "عامه اراضيسي", latin: "Amme arâzisi", meaning: "Kamu toprağı", category: "Arazi" },
-            { id: 13, osmanlica: "اراضي ميربه", latin: "Arâzi-i mirîye", meaning: "Mîrî yani devlete ait topraklar, arazi-i emiriyye", category: "Arazi" },
-            { id: 14, osmanlica: "رض", latin: "Arz", meaning: "Toprak; sunma, bildirme", category: "Arazi" },
-            { id: 15, osmanlica: "عرضاً", latin: "Arzen", meaning: "Genişlik, en", category: "Ölçü" },
-            { id: 16, osmanlica: "اراضي محميه", latin: "Arâzi-i mahmiyye", meaning: "Geliri (rakabesi) Hazineye ait bulunan araziden koru, mer'a, yol, pazar yerleri gibi halkın gereksinimlerine ayrılmış yerler", category: "Arazi" },
-            { id: 17, osmanlica: "اراضي مفاطعه", latin: "Arâzi-i mukâta'a", meaning: "Maktû (götürü) bir vergiye bağlanmış arazi, kesime verilmiş topraklar; devlete hizmeti geçen önemli kişilere bizzat devlet tarafından geliri veya vergisi terk edilen topraklar", category: "Arazi" },
-            { id: 18, osmanlica: "اراضي محلوله", latin: "Arâzi-i mahlûle", meaning: "Tasarruf sahibinin intikal sahibi bırakmaksızın ölümü ile hazineye dönen miri arazidir", category: "Arazi" },
-            { id: 19, osmanlica: "مكتومه", latin: "Arâzi-i mektûme", meaning: "Devlete ait olduğu halde, devletin hakkı çiğnenerek haksız ve fuzulen işgal edilen arazi", category: "Arazi" },
-            { id: 20, osmanlica: "راضی مزروعه", latin: "Arâzi-i mezrû'a", meaning: "Ekilen arazi", category: "Arazi" },
-            { id: 21, osmanlica: "راضی سلیه", latin: "Arazi-i selîha", meaning: "Çıplak arazi", category: "Arazi" },
-            { id: 22, osmanlica: "سینه", latin: "Arazi-i seniyye", meaning: "Saltanat makamını işgal ederlere ait toprak", category: "Arazi" },
-            { id: 23, osmanlica: "نسینه", latin: "Asabe-i nesebiyye", meaning: "Kan ve soy yoluyla akraba", category: "Aile" },
-            { id: 24, osmanlica: "ب", latin: "Asiyâb", meaning: "Değirmen", category: "Genel" },
-            { id: 25, osmanlica: "اسلح", latin: "Aslah (eslah)", meaning: "En uygun (Vakfiyelerde en uygun oğul diye geçer)", category: "Genel" },
-            { id: 26, osmanlica: "فق", latin: "Atîk", meaning: "Eski", category: "Genel" },
-            { id: 27, osmanlica: "د", latin: "Bâ", meaning: "Farsça ile, -li, lu eki", category: "Dil" },
-            { id: 28, osmanlica: "حاود", latin: "Bâ-temessük", meaning: "Temessük ile (tasarruf olunan toprak)", category: "Hukuk" },
-            { id: 29, osmanlica: "حاود", latin: "Bâ-hüccet", meaning: "Hüccet ile (tasarruf olunan toprak)", category: "Hukuk" },
-            { id: 30, osmanlica: "ف د", latin: "Bâ-tapu", meaning: "Tapu ile (tasarruf olunan toprak)", category: "Tapu" },
-            { id: 31, osmanlica: "حد", latin: "Ba'de", meaning: "Sonra", category: "Zaman" },
-            { id: 32, osmanlica: "حاود", latin: "Ba'demâ", meaning: "Bundan böyle", category: "Zaman" },
-            { id: 33, osmanlica: "ع", latin: "Bâc", meaning: "Örfî vergi", category: "Vergi" },
-            { id: 34, osmanlica: "هو", latin: "Bâd-i hevâ", meaning: "Kayıt dışı, önceden belirlenenin dışında gelen gelir; Bedava, parasız", category: "Finans" },
-            { id: 35, osmanlica: "ب", latin: "Bâb", meaning: "Bölüm, kapı", category: "Genel" },
-            { id: 36, osmanlica: "حاود", latin: "Bânî", meaning: "Kuran, yapan, bina eden", category: "Genel" },
-            { id: 37, osmanlica: "ع", latin: "Bedel-i ferâğ", meaning: "Miri arazi ve çifte kiralı (icareteynli) vakıf taşınmazlarının tasarruf haklarının devredilmesi karşılığı alınan paradır", category: "Finans" },
-            { id: 38, osmanlica: "خل", latin: "Bedel-i misl", meaning: "Arazi hukukunda tasarruf hakkı karşılığı emsaline uygun ödenen para", category: "Finans" },
-            { id: 39, osmanlica: "مسعی", latin: "Bedel-i müsemmâ", meaning: "Akitte tayin olunan bedel", category: "Finans" },
-            { id: 40, osmanlica: "نون", latin: "Benûn", meaning: "Üç veya daha ziyade çocuklar", category: "Aile" },
-            { id: 41, osmanlica: "آتی", latin: "Ber-mûceb-i âtî", meaning: "Aşağıda geleceği gibi, Aşağıda ifade olunacağı üzere", category: "Genel" },
-            { id: 42, osmanlica: "معتاد", latin: "Ber-mu'tâd", meaning: "Alışılageldiği üzere, devamlı yapılagelen usule göre", category: "Genel" },
-            { id: 43, osmanlica: "الثمه", latin: "Berî'ü'z-zimme", meaning: "Zimmetten veya borçlardan kurtulmuş, temize çıkmış", category: "Hukuk" },
-            { id: 44, osmanlica: "بيع بالاستغلال", latin: "Bey'-i bi'l-iştiglâl", meaning: "Satış ve kiralamanın aynı anda yapıldığı satış, malı satıp aynı anda gelir ve menfaatını elinde tutuma", category: "Hukuk" },
-            { id: 45, osmanlica: "بيع بالوفاء", latin: "Bey'-i bi'l-vefâ", meaning: "Medeni Kanunun yürürlüğe girmesinden evvel yapılmış gayri menkul rehni, vefaen satış, satılanın ileride satan tarafından geri satın alınması şartıyla yapılan satış", category: "Hukuk" },
-            { id: 46, osmanlica: "بيع بالشرط", latin: "Bey'-i bi'ş-şart", meaning: "Şartla satım, şartlı satım", category: "Hukuk" },
-            { id: 47, osmanlica: "بيع و شراء", latin: "Bey' u şirâ", meaning: "Alış-veriş, alım-satım", category: "Ticaret" },
-            { id: 48, osmanlica: "بينينده", latin: "Beyninde", meaning: "Arasında, aralarında", category: "Genel" },
-            { id: 49, osmanlica: "دابت", latin: "Bidâyet", meaning: "Başlangıç", category: "Zaman" },
-            { id: 50, osmanlica: "ابن", latin: "Bin", meaning: "Oğul", category: "Aile" },
-            { id: 51, osmanlica: "ثات", latin: "Bint", meaning: "Kız", category: "Aile" },
-            { id: 52, osmanlica: "د", latin: "Bilâ", meaning: "-sız ekinin görevinde olmak üzere Arapça sözcüklerin başına getirilerek sıfat yapar ve bileşik yazılır", category: "Dil" },
-            { id: 53, osmanlica: "رالا زوح", latin: "Bilâ-zevc", meaning: "Kocasız, kocası sağ olmadığı halde", category: "Aile" },
-            { id: 54, osmanlica: "رالا زوجه", latin: "Bilâ-zevce", meaning: "Karısız, karısı sağ olmadığı halde", category: "Aile" },
-            { id: 55, osmanlica: "رالا وال", latin: "Bilâ-veled", meaning: "Çocuksuz, çocuğu olmayan", category: "Aile" },
-            { id: 56, osmanlica: "رالا ابوين", latin: "Bilâ-ebeveyn", meaning: "Anası ve babası olmayan", category: "Aile" },
-            { id: 57, osmanlica: "بور حفي", latin: "Bu dahi", meaning: "Bu da bir öncesi gibi, yukarıda geçenin aynısı", category: "Genel" },
-            { id: 58, osmanlica: "جار", latin: "Câr", meaning: "Komşu", category: "Genel" },
-            { id: 59, osmanlica: "جار", latin: "Câri", meaning: "Uygulanan", category: "Genel" },
-            { id: 60, osmanlica: "جانب", latin: "Cânib", meaning: "Taraf, cihet, yön", category: "Genel" },
-            { id: 61, osmanlica: "جانب يمين", latin: "Cânib-i yemîn", meaning: "Sağ taraf", category: "Yön" },
-            { id: 62, osmanlica: "جانب يسار", latin: "Cânib-i yesâr", meaning: "Sol taraf", category: "Yön" },
-            { id: 63, osmanlica: "جهت اعطای سنن", latin: "Cihet-i i'tâ-yı senet", meaning: "Senetin veriliş sebebi, (iktisâb)", category: "Hukuk" },
-            { id: 64, osmanlica: "جزا", latin: "Cebel", meaning: "Dağ", category: "Coğrafya" },
-            { id: 65, osmanlica: "جنا", latin: "Cenâh", meaning: "Yan taraf", category: "Yön" },
-            { id: 66, osmanlica: "جنا", latin: "Cenâb", meaning: "Evin yan tarafı, avlu (hürmet bildirilen sıfat olarak da kullanılır)", category: "Mekan" },
-            { id: 67, osmanlica: "جنوب", latin: "Cenûb", meaning: "Güney", category: "Yön" },
-            { id: 68, osmanlica: "جديد", latin: "Cedîd", meaning: "Yeni", category: "Zaman" },
-            { id: 69, osmanlica: "ان", latin: "Dâyin", meaning: "Alacaklı", category: "Finans" },
-            { id: 70, osmanlica: "راداشی قیدل", latin: "Dâimi kayıtlar", meaning: "Tapu İdarelerinde iş sahiplerinin müracaatı üzerine tutulan kayıtlar", category: "Tapu" },
-            { id: 71, osmanlica: "ن", latin: "Deyn", meaning: "Borç", category: "Finans" },
-            { id: 72, osmanlica: "راهقز خاقانی", latin: "Defter-i Hâkânî", meaning: "Eskiden taşınmazlar hakkındaki kayıt ve tescillerin işlendiği defterin adı. Tapu-Tahrir Defterleri için de bu ad kullanılmıştır. Bugünkü tapu sicilinin karşılığıdır", category: "Tapu" },
-            { id: 73, osmanlica: "هفتر خاقانی ادارهسی", latin: "Defter-i Hâkânî İdaresi", meaning: "Şimdiki tapu dairelerinin eski adı", category: "Tapu" },
-            { id: 74, osmanlica: "هفتر خاقانی ناظری", latin: "Defter-i Hâkânî Nâzırı", meaning: "Osmanlı Devleti zamanında tapu ve kadastro işlerine bakan nâzır, bakan", category: "Tapu" },
-            { id: 75, osmanlica: "در سعادت", latin: "Der-Sa'âdet", meaning: "Osmanlı Döneminde İstanbul'a verilen ad", category: "Coğrafya" },
-            { id: 76, osmanlica: "روون", latin: "Derûn", meaning: "İçinde", category: "Genel" },
-            { id: 77, osmanlica: "دور و تملیك", latin: "Devir ve temlik", meaning: "Bir hakkın bir kimseden başka bir kimseye geçmesi", category: "Hukuk" },
-            { id: 78, osmanlica: "اب", latin: "Eb", meaning: "Baba, ata", category: "Aile" },
-            { id: 79, osmanlica: "با عن جد", latin: "Eben an cedd", meaning: "Babadan oğla (Ebâ an cedd)", category: "Aile" },
-            { id: 80, osmanlica: "ثاء", latin: "Ebnâ", meaning: "Oğullar", category: "Aile" },
-            { id: 81, osmanlica: "ایناء ابناء", latin: "Ebnâ-yı ebnâ", meaning: "Kız ve erkek çocukları ile kız ve erkek torunları ifade eder", category: "Aile" },
-            { id: 82, osmanlica: "بوین", latin: "Ebeveyn", meaning: "Ana, baba", category: "Aile" },
-            { id: 83, osmanlica: "اب", latin: "Ebvâb", meaning: "Kapılar", category: "Mekan" },
-            { id: 84, osmanlica: "کبر", latin: "Ekber", meaning: "Daha (en, pek büyük), vakfiyelerde geçer", category: "Genel" },
-            { id: 85, osmanlica: "هلوئ", latin: "El-yevm", meaning: "Halen, bugün", category: "Zaman" },
-            { id: 86, osmanlica: "اماکن", latin: "Emâkin", meaning: "Mahaller, mekanlar, mevkiler, yerler", category: "Mekan" },
-            { id: 87, osmanlica: "باب", latin: "Esbâb", meaning: "Sebepler", category: "Genel" },
-            { id: 88, osmanlica: "سامی", latin: "Esâmî", meaning: "İsimler", category: "Dil" },
-            { id: 89, osmanlica: "اشجار", latin: "Eşcâr", meaning: "Ağaçlar", category: "Doğa" },
-            { id: 90, osmanlica: "شجار مثمر", latin: "Eşcâr-ı müsmire", meaning: "Meyveli Ağaçlar", category: "Doğa" },
-            { id: 91, osmanlica: "شجار غير مثمر", latin: "Eşcâr-ı gayr-i müsmire", meaning: "Meyvesiz ağaçlar", category: "Doğa" },
-            { id: 92, osmanlica: "ه", latin: "Eş", meaning: "Onun", category: "Dil" },
-            { id: 93, osmanlica: "شخص", latin: "Eşhâs", meaning: "Şahıslar", category: "Genel" },
-            { id: 94, osmanlica: "اربع", latin: "Erba'a", meaning: "Dört", category: "Sayı" },
-            { id: 95, osmanlica: "ارباب", latin: "Erbâb", meaning: "Sahipler, malikler", category: "Mülkiyet" },
-            { id: 96, osmanlica: "اطراف اربع", latin: "Etrâf-ı erba'ası", meaning: "Dört tarafı", category: "Yön" },
-            { id: 97, osmanlica: "اوقاف", latin: "Evkâf", meaning: "Vakıflar", category: "Vakıf" },
-            { id: 98, osmanlica: "اوقاف همايون", latin: "Evkâf-ı Hümâyûn", meaning: "Padışahların ve padışahlara mensup olanların vakıfları", category: "Vakıf" },
-            { id: 99, osmanlica: "اوالد صليبه", latin: "Evlâd-ı sulbiyye", meaning: "Vakıfta bir kimsenin çocuklarını anlatan terimdir. Bir adamın torunları onun evlâd-ı sulbiyyesidir", category: "Aile" },
-            { id: 100, osmanlica: "اوالد ام", latin: "Evlâd-ı ümm", meaning: "Ölenin ana bir oğlan ve kız kardeşleri", category: "Aile" },
-            { id: 101, osmanlica: "اوراق مثبته", latin: "Evrâk-ı müsbite", meaning: "Tapu sicilini tamamlayan belgeler", category: "Tapu" },
-            { id: 102, osmanlica: "اوالد اناث", latin: "Evlâd-ı inâs", meaning: "Kız çocukları (vakfiyelerde geçer)", category: "Aile" },
-            { id: 103, osmanlica: "اوالد يول", latin: "Evlâd-ı yol", meaning: "Çoluk çocuk (vakfiyelerde)", category: "Aile" },
-            { id: 104, osmanlica: "فراغ", latin: "Ferâğ", meaning: "Satış (Bir mülkün tasarruf, sahip, olma hakkını başkasına terk etme, Arazi Kanununda ise miri veya vakıf arazinin yararlanma hakkının satışı)", category: "Ticaret" },
-            { id: 105, osmanlica: "فوق", latin: "Fevk", meaning: "Üst", category: "Yön" },
-            { id: 106, osmanlica: "فوقاني", latin: "Fevkânî", meaning: "Binanın üst kısmı, binanın üst katı", category: "Mekan" },
-            { id: 107, osmanlica: "فوقاني تحتاني", latin: "Fevkânî tahtânî", meaning: "Altlı üstlü", category: "Mekan" },
-            { id: 108, osmanlica: "فوت", latin: "Fevt", meaning: "Ölüm", category: "Genel" },
-            { id: 109, osmanlica: "غرب", latin: "Garb", meaning: "Batı", category: "Yön" },
-            { id: 110, osmanlica: "غرس", latin: "Gars", meaning: "Ağaç, fidan dikmek", category: "Doğa" },
-            { id: 111, osmanlica: "غير منقول", latin: "Gayr-i menkul", meaning: "Taşınmaz mal", category: "Gayrimenkul" },
-            { id: 112, osmanlica: "غير موصاقه", latin: "Gayr-i musakka", meaning: "Susuz", category: "Doğa" },
-            { id: 113, osmanlica: "حفيد", latin: "Hafîd", meaning: "Torun", category: "Aile" },
-            { id: 114, osmanlica: "حق قرار", latin: "Hakk-ı karâr", meaning: "Arazi Kanunun 78 nci maddesinde belirtilen nizasız 10 yıllık zilyetlik", category: "Hukuk" },
-            { id: 115, osmanlica: "حق شرب", latin: "Hakk-ı şurb", meaning: "Su hakkı", category: "Hak" },
-            { id: 116, osmanlica: "خانه", latin: "Hâne", meaning: "Ev", category: "Mekan" },
-            { id: 117, osmanlica: "خط", latin: "Hatt", meaning: "Çizgi, sınır çizgisi", category: "Genel" },
-            { id: 118, osmanlica: "حجت", latin: "Hüccet", meaning: "Delil", category: "Hukuk" },
-            { id: 119, osmanlica: "حجت شرعیه", latin: "Hüccet-i şer'iyye", meaning: "Şeriyye mahkemelerinden sırf mülk taşınmazlar için verilen belge", category: "Hukuk" },
-            { id: 120, osmanlica: "حاوی", latin: "Hâvî", meaning: "İçine alan, ihtiva eden", category: "Genel" },
-            { id: 121, osmanlica: "ابن", latin: "İbn", meaning: "Oğul, erkek çocuk", category: "Aile" },
-            { id: 122, osmanlica: "ابنیه", latin: "İbniyye", meaning: "Ölenin oğlunun kızı veya oğlunun oğlunun kızıdır", category: "Aile" },
-            { id: 123, osmanlica: "ابنان", latin: "İbnân", meaning: "İki çocuk", category: "Aile" },
-            { id: 124, osmanlica: "ایجار", latin: "Îcâr", meaning: "Kiraya verme", category: "Finans" },
-            { id: 125, osmanlica: "اجاره", latin: "İcâre", meaning: "Kira, gelir", category: "Finans" },
-            { id: 126, osmanlica: "افراز", latin: "İfrâz", meaning: "Parçalara ayırma", category: "Genel" },
-            { id: 127, osmanlica: "احیاء", latin: "İhyâ", meaning: "Diriltme, canlandırma, tazelik verme", category: "Genel" },
-            { id: 128, osmanlica: "احياء", latin: "İhyâen", meaning: "(Ham arazinin) ıslahıyle iktisap", category: "Arazi" },
-            { id: 129, osmanlica: "احیاء موات", latin: "İhyâ-yı mevât", meaning: "İşlenmemiş toprağı ekime elverişli bir hale getirme, işleme", category: "Arazi" },
-            { id: 130, osmanlica: "انتقال", latin: "İntikâl", meaning: "Geçirim; geçme, bir mal üzerindeki tasarruf hakkının yasa ile belli kesimlere geçmesi", category: "Hukuk" },
-            { id: 131, osmanlica: "انتفاع", latin: "İntifâ", meaning: "Yararlanma, kullanma", category: "Genel" },
-            { id: 132, osmanlica: "ارث", latin: "İrs", meaning: "Veraset, soya çekim", category: "Hukuk" },
-            { id: 133, osmanlica: "قيد", latin: "Kuyûd", meaning: "Kayıtlar", category: "Kayıt" },
-            { id: 134, osmanlica: "قيد قديمه", latin: "Kuyûd-ı kadîme", meaning: "Eski Kayıtlar", category: "Kayıt" },
-            { id: 135, osmanlica: "قديم", latin: "Kadîm", meaning: "Eski", category: "Zaman" },
-            { id: 136, osmanlica: "قلع", latin: "Kal'", meaning: "Sökme, çıkarma (ağaç)", category: "Genel" },
-            { id: 137, osmanlica: "كان", latin: "Kâin", meaning: "Bulunan, mevcut olan", category: "Genel" },
-            { id: 138, osmanlica: "قریه", latin: "Karye", meaning: "Köy", category: "Coğrafya" },
-            { id: 139, osmanlica: "كبير", latin: "Kebîr", meaning: "Yaşça büyük, kebîre: büyük kız evlat (vakfiyede geçer)", category: "Aile" },
-            { id: 140, osmanlica: "قرى", latin: "Kurâ", meaning: "Köyler", category: "Coğrafya" },
-            { id: 141, osmanlica: "كرم", latin: "Kürûm", meaning: "Bağ çubuğu", category: "Doğa" },
-            { id: 142, osmanlica: "كرم", latin: "Köm", meaning: "1- Küme, yığın 2- Küçük ağıl", category: "Genel" },
-            { id: 143, osmanlica: "لابشرط", latin: "Lâ-bî-sartın", meaning: "Şarta dayanmaksızın", category: "Hukuk" },
-            { id: 144, osmanlica: "لب دریا", latin: "Leb-i derya", meaning: "Deniz kenarı, sahil", category: "Coğrafya" },
-            { id: 145, osmanlica: "للاب", latin: "Li-ebb", meaning: "Baba bir kardeş", category: "Aile" },
-            { id: 146, osmanlica: "للام", latin: "Li-ünm", meaning: "Ana bir kardeş", category: "Aile" },
-            { id: 147, osmanlica: "لواء", latin: "Livâ", meaning: "Sancak; Osmanlı döneminde sancak olarak tanımlanan idari birim.", category: "İdare" },
-            { id: 148, osmanlica: "لاجل الاعمار", latin: "Li-cell'l imâr", meaning: "İmar edilmek üzere", category: "İmar" },
-            { id: 149, osmanlica: "معادن", latin: "Maâdîn", meaning: "Madenler", category: "Doğa" },
-            { id: 150, osmanlica: "معاً", latin: "Ma'an", meaning: "Beraber, birlikte", category: "Genel" },
-            { id: 151, osmanlica: "مابین", latin: "Mâbeyn", meaning: "Ara", category: "Genel" },
-            { id: 152, osmanlica: "مابین سندی", latin: "Mâbeyn senedi", meaning: "Ara senedi", category: "Hukuk" },
-            { id: 153, osmanlica: "ما فوق", latin: "Mâfevk", meaning: "Üst mahal", category: "Mekan" },
-            { id: 154, osmanlica: "مغرب", latin: "Mağrib", meaning: "Garp, batı, batıda bulunan", category: "Yön" },
-            { id: 155, osmanlica: "محل", latin: "Mahal", meaning: "Yer", category: "Mekan" },
-            { id: 156, osmanlica: "مخدوم", latin: "Mahdûm", meaning: "Oğul, evlat", category: "Aile" },
-            { id: 157, osmanlica: "ماء جاری", latin: "Mâ-i câri", meaning: "Akarsu", category: "Doğa" },
-            { id: 158, osmanlica: "ماء لذیذ", latin: "Mâ-i leziz", meaning: "İçilecek su, lezzetli su, memba suyu", category: "Doğa" },
-            { id: 159, osmanlica: "مالك", latin: "Mâlik", meaning: "Mülk arazinin sahibi", category: "Mülkiyet" },
-            { id: 160, osmanlica: "معروف", latin: "Ma'rûf", meaning: "Herkesçe bilinen", category: "Genel" },
-            { id: 161, osmanlica: "معتوه", latin: "Ma'tûh(e)", meaning: "Bunamış, bunak; sakat, kötürüm, amelmânde", category: "Genel" },
-            { id: 162, osmanlica: "معتوق", latin: "Ma'tûk", meaning: "Azat olunmuş, azatlı", category: "Hukuk" },
-            { id: 163, osmanlica: "مضبطه", latin: "Mazbata", meaning: "Tutanak", category: "Belge" },
-            { id: 164, osmanlica: "مضبوط وقفلر", latin: "Mazbût vakıflar", meaning: "Yönetimi devlet tarafından ele alınmış vakıflar", category: "Vakıf" },
-            { id: 165, osmanlica: "مبانی", latin: "Mebâni", meaning: "Binalar, yapılar", category: "Mekan" },
-            { id: 166, osmanlica: "مبدأ", latin: "Mebde'", meaning: "Başlangıç", category: "Zaman" },
-            { id: 167, osmanlica: "مجاناً", latin: "Meccânen", meaning: "Ücretsiz, parasız, karşılıksız", category: "Finans" },
-            { id: 168, osmanlica: "مجلس اداره", latin: "Meclis-i idâre", meaning: "İdare meclisi, yönetim kurulu", category: "İdare" },
-            { id: 169, osmanlica: "مجموع", latin: "Mecmû'an", meaning: "Toplu olarak, toptan", category: "Genel" },
-            { id: 170, osmanlica: "مجموع", latin: "Mecmû'u", meaning: "Tümü, tamamı", category: "Genel" },
-            { id: 171, osmanlica: "مجور", latin: "Me'cûr", meaning: "Kiraya verilen şey, kiralanan", category: "Finans" },
-            { id: 172, osmanlica: "مجله", latin: "Mecelle", meaning: "Osmanlı İmparatorluğu'nda hazırlanan 1851 maddelik kanun külliyatı", category: "Hukuk" },
-            { id: 173, osmanlica: "منزل", latin: "Menzil", meaning: "Mesafe, yollardaki konak yeri, ev", category: "Mekan" },
-            { id: 174, osmanlica: "مساحه", latin: "Mesâha", meaning: "Ölçme, ölçümleme, yüz ölçümü", category: "Ölçü" },
-            { id: 175, osmanlica: "مسكن", latin: "Mesken", meaning: "Kişinin fiilen oturduğu yer, konut", category: "Mekan" },
-            { id: 176, osmanlica: "مذكور", latin: "Mezkûr", meaning: "Zikredilen, sözü edilen", category: "Genel" },
-            { id: 177, osmanlica: "منطقه", latin: "Mıntıka", meaning: "Bölge, yer, mahal", category: "Coğrafya" },
-            { id: 178, osmanlica: "مربوط", latin: "Merbût", meaning: "Bağlı", category: "Genel" },
-            { id: 179, osmanlica: "مرهون", latin: "Merhûn", meaning: "Rehnedilen mal", category: "Finans" },
-            { id: 180, osmanlica: "مرعيت", latin: "Mer'iyyet", meaning: "Yürürlük", category: "Hukuk" },
-            { id: 181, osmanlica: "ممات", latin: "Memât", meaning: "Ölüm", category: "Genel" },
-            { id: 182, osmanlica: "مملوك", latin: "Memlûk", meaning: "Birinin malı olan", category: "Mülkiyet" },
-            { id: 183, osmanlica: "منافع", latin: "Menâfi", meaning: "Menfaatler", category: "Genel" },
-            { id: 184, osmanlica: "متروك", latin: "Metrûk", meaning: "Terk edilmiş", category: "Genel" },
-            { id: 185, osmanlica: "موروث مال", latin: "Mevrûs mal", meaning: "Miras yolu ile edinilen mal", category: "Hukuk" },
-            { id: 186, osmanlica: "مقياس", latin: "Mikyas", meaning: "(Ölçek) Kıyas edecek alet, uzunluk ölçüsü", category: "Ölçü" },
-            { id: 187, osmanlica: "من القديم", latin: "Mine'l-kadîm", meaning: "Çok eski zamanlardan beri gelen", category: "Zaman" },
-            { id: 188, osmanlica: "ميرى اراضي", latin: "Mîrî arâzî", meaning: "Mülkiyeti devlete ait olan taşınmazlar", category: "Arazi" },
-            { id: 189, osmanlica: "معجله", latin: "Mu'accelle", meaning: "Önden alınan peşin harç veya kira", category: "Finans" },
-            { id: 190, osmanlica: "معدل", latin: "Mu'addel", meaning: "Değiştirilmiş, tadil edilmiş", category: "Genel" },
-            { id: 191, osmanlica: "مبادل", latin: "Mubâdil", meaning: "Başkasının yerine getirilmiş, bedel", category: "Genel" },
-            { id: 192, osmanlica: "معجل", latin: "Mu'eccel", meaning: "Tecil edilmiş, ertelenmiş", category: "Finans" },
-            { id: 193, osmanlica: "محبر", latin: "Muharrer", meaning: "Yazılı", category: "Belge" },
-            { id: 194, osmanlica: "محتوى", latin: "Muhtevi", meaning: "İçinde bulunan, ihtiva eden", category: "Genel" },
-            { id: 195, osmanlica: "مقطعه", latin: "Mukâtaa", meaning: "Götürü vergiye bağlanmış arazi veya kira", category: "Arazi" },
-            { id: 196, osmanlica: "مقيد", latin: "Mukayyed", meaning: "Kaydedilmiş", category: "Kayıt" },
-            { id: 197, osmanlica: "منقلب", latin: "Munkalib", meaning: "Değişen", category: "Genel" },
-            { id: 198, osmanlica: "مصاقا", latin: "Musakkâ", meaning: "Sulu (suyu olan) tarla", category: "Arazi" },
-            { id: 199, osmanlica: "مصقف", latin: "Musakkaf", meaning: "Üstü damla örtülü bina", category: "Mekan" },
-            { id: 200, osmanlica: "مصقفات", latin: "Musakkafât", meaning: "Ev, han ve dükkan gibi kapalı yerler", category: "Mekan" },
-            { id: 201, osmanlica: "متصرّف", latin: "Mutasarruf", meaning: "Tasarruf hakkı olan kişi, mal sahibi", category: "Mülkiyet" },
-            { id: 202, osmanlica: "معتبر", latin: "Muteber", meaning: "İtibar edilen, geçerli", category: "Genel" },
-            { id: 203, osmanlica: "مجدّداً", latin: "Müceddeden", meaning: "Yeniden", category: "Genel" },
-            { id: 204, osmanlica: "ملاحظات", latin: "Mülâhazat", meaning: "Açıklamalar, notes", category: "Genel" },
-            { id: 205, osmanlica: "ملحق اوقاف", latin: "Mülhak Vakıflar", meaning: "Mütevellileri tarafından idare olunan vakıflar", category: "Vakıf" },
-            { id: 206, osmanlica: "ملك اراضي", latin: "Mülk arâzî", meaning: "Tüm hakları kişiye ait olan emlak", category: "Arazi" },
-            { id: 207, osmanlica: "ملتقی النسب", latin: "Mültekâ-yı nesâb", meaning: "Soyların birleştiği kişi", category: "Aile" },
-            { id: 208, osmanlica: "مناقله", latin: "Münâkale", meaning: "Eski ve yeni kayıt arasında bağ kurma", category: "Tapu" },
-            { id: 209, osmanlica: "منهدم", latin: "Münhedim", meaning: "Yıkılan, çöken bina", category: "Mekan" },
-            { id: 210, osmanlica: "مسجّل", latin: "Müseccel", meaning: "Tescil edilmiş olan", category: "Tapu" },
-            { id: 211, osmanlica: "مستقلاً", latin: "Müstakilen", meaning: "Yalnız, kendine ait şekilde", category: "Genel" },
-            { id: 212, osmanlica: "مستغلات", latin: "Müstegallât", meaning: "Vakfa gelir getiren gayrimenkuller", category: "Vakıf" },
-            { id: 213, osmanlica: "مستملات", latin: "Müştemilât", meaning: "Eklenti, ek yapı", category: "Mekan" },
-            { id: 214, osmanlica: "متّعاقب", latin: "Mütte'âkib", meaning: "Birbiri ardına gelen", category: "Genel" },
-            { id: 215, osmanlica: "متساوياً", latin: "Mütesâviyen", meaning: "Eşit olarak", category: "Genel" },
-            { id: 216, osmanlica: "متسلسل", latin: "Müteselsil", meaning: "Zincirleme", category: "Genel" },
-            { id: 217, osmanlica: "متوجهاً", latin: "Müteveccihan", meaning: "Yönelerek", category: "Genel" },
-            { id: 218, osmanlica: "متوفّى", latin: "Müteveffâ", meaning: "Vefat etmiş erkek", category: "Genel" },
-            { id: 219, osmanlica: "متوفّية", latin: "Müteveffiye", meaning: "Vefat etmiş kadın", category: "Genel" },
-            { id: 220, osmanlica: "متولّى", latin: "Mütevelli", meaning: "Vakfı yöneten memur/kişi", category: "Vakıf" },
-            { id: 221, osmanlica: "نسلاً بعد نسل", latin: "Neslen ba'de nesl", meaning: "Nesilden nesile", category: "Zaman" },
-            { id: 222, osmanlica: "پدر", latin: "Peder", meaning: "Baba", category: "Aile" },
-            { id: 223, osmanlica: "پدرش", latin: "Pedersç", meaning: "Onun babası", category: "Aile" },
-            { id: 224, osmanlica: "ر", latin: "Ra", meaning: "Rebiü'l-âhir ayının kısaltması", category: "Zaman" },
-            { id: 225, osmanlica: "ربع", latin: "Rab'", meaning: "Avlulu ev", category: "Mekan" },
-            { id: 226, osmanlica: "رب المال", latin: "Rabbu'l-mâl", meaning: "Mal sahibi", category: "Mülkiyet" },
-            { id: 227, osmanlica: "ربّة", latin: "Rabbet", meaning: "Üvey ana", category: "Aile" },
-            { id: 228, osmanlica: "رقبه", latin: "Rakabe", meaning: "Kuru/çıplak mülkiyet", category: "Mülkiyet" },
-            { id: 229, osmanlica: "رقبه ايتمك", latin: "Rekabe etmek", meaning: "Vakıf gelirini aslına eklemek", category: "Vakıf" },
-            { id: 230, osmanlica: "صغير", latin: "Sagîr", meaning: "Küçük erkek çocuk", category: "Aile" },
-            { id: 231, osmanlica: "صغيره", latin: "Sagire", meaning: "Küçük kız çocuk", category: "Aile" },
-            { id: 232, osmanlica: "ثالث", latin: "Sâlis", meaning: "Üçüncü", category: "Sayı" },
-            { id: 233, osmanlica: "ثالثاً", latin: "Sâlisen", meaning: "Üçüncü olarak", category: "Sayı" },
-            { id: 234, osmanlica: "سطح", latin: "Sath", meaning: "Yüzey", category: "Genel" },
-            { id: 235, osmanlica: "سهم", latin: "Sehim", meaning: "Hisse, pay", category: "Finans" },
-            { id: 236, osmanlica: "ثمن", latin: "Semen", meaning: "Satış bedeli, değer", category: "Finans" },
-            { id: 237, osmanlica: "ثبوت شرعى", latin: "Sübût-ı şer'î", meaning: "Şer'i olarak sabit olan hak", category: "Hukuk" },
-            { id: 238, osmanlica: "سكنى", latin: "Süknâ", meaning: "Oturma hakkı, ikamet", category: "Mekan" },
-            { id: 239, osmanlica: "شمال", latin: "Şimâl", meaning: "Kuzey", category: "Yön" },
-            { id: 240, osmanlica: "شرق", latin: "Şark", meaning: "Doğu", category: "Yön" },
-            { id: 241, osmanlica: "تحجير", latin: "Tahcîr", meaning: "Arazi etrafını taşla çevirme", category: "Arazi" },
-            { id: 242, osmanlica: "تحتاني", latin: "Tahtânî", meaning: "Binanın alt katı", category: "Mekan" },
-            { id: 243, osmanlica: "حت الارض", latin: "Tahte'l-arz", meaning: "Yeraltı", category: "Coğrafya" },
-            { id: 244, osmanlica: "تحويل", latin: "Tahvîl", meaning: "Değiştirme", category: "Genel" },
-            { id: 245, osmanlica: "تحرير", latin: "Tahrîr", meaning: "Yazma, kaydetme", category: "Genel" },
-            { id: 246, osmanlica: "تاپو تسكي", latin: "Tapu Temessüklü", meaning: "Eski tapu senedi", category: "Tapu" },
-            { id: 247, osmanlica: "طريق", latin: "Tarîk", meaning: "Yol", category: "Coğrafya" },
-            { id: 248, osmanlica: "طريق عام", latin: "Tarîk-i âmm", meaning: "Umuma açık genel yol, cadde", category: "Coğrafya" },
-            { id: 249, osmanlica: "طريق خاص", latin: "Tarîk-i hâs", meaning: "Özel yol, çıkmaz sokak", category: "Coğrafya" },
-            { id: 250, osmanlica: "طرفين", latin: "Tarafeyn", meaning: "Taraflar", category: "Genel" },
-            { id: 251, osmanlica: "تصديقي يوقالهه دفتر", latin: "Tasdikli Yoklama Defteri", meaning: "Onaylı tapu kayıt defteri", category: "Tapu" },
-            { id: 252, osmanlica: "تصديقسز يوقالهه دفتر", latin: "Tasdiksiz Yoklama Defteri", meaning: "Onaysız yoklama defteri", category: "Tapu" },
-            { id: 253, osmanlica: "تبادل", latin: "Tebâdül", meaning: "Karşılıklı değişme", category: "Genel" },
-            { id: 254, osmanlica: "تهجير", latin: "Tehcîr", meaning: "Göç ettirme", category: "Genel" },
-            { id: 255, osmanlica: "تمدّى", latin: "Temâdi", meaning: "Devam etme", category: "Zaman" },
-            { id: 256, osmanlica: "تمليك", latin: "Temlîk", meaning: "Mülk olarak devretmek", category: "Mülkiyet" },
-            { id: 257, osmanlica: "تملّك", latin: "Temellük", meaning: "Mülk edinmek", category: "Mülkiyet" },
-            { id: 258, osmanlica: "تمسّك", latin: "Temessük", meaning: "Tasarruf belgesi, borç senedi", category: "Hukuk" },
-            { id: 259, osmanlica: "ترقين", latin: "Terkîn", meaning: "Kayıttan silme", category: "Kayıt" },
-            { id: 260, osmanlica: "تسلسل", latin: "Teselsül", meaning: "Zincirleme takip", category: "Genel" },
-            { id: 261, osmanlica: "توليد", latin: "Tevliyet", meaning: "Vakıf yönetme görevi", category: "Vakıf" },
-            { id: 262, osmanlica: "تزيد", latin: "Tezyîd", meaning: "Artırma", category: "Genel" },
-            { id: 263, osmanlica: "تفويض", latin: "Tefvîz", meaning: "Hakkın devredilmesi", category: "Hukuk" },
-            { id: 264, osmanlica: "تقدير بدل", latin: "Takdîr-i bedel", meaning: "Emsal bedel belirleme", category: "Finans" },
-            { id: 265, osmanlica: "تصحيح", latin: "Tashîh", meaning: "Düzeltme", category: "Genel" },
-            { id: 266, osmanlica: "طول", latin: "Tûl", meaning: "Uzunluk", category: "Ölçü" },
-            { id: 267, osmanlica: "طولاً", latin: "Tûlen", meaning: "Uzunlamasına", category: "Ölçü" },
-            { id: 268, osmanlica: "تداول", latin: "Tedâvül", meaning: "Tapu kayıtlarındaki el değiştirme", category: "Tapu" },
-            { id: 269, osmanlica: "توثيق", latin: "Tevsîk", meaning: "Belgelendirme", category: "Belge" },
-            { id: 270, osmanlica: "تبعه دولت عليه", latin: "Teb'a-i Devlet-i Aliyye", meaning: "Osmanlı vatandaşı", category: "İdare" },
-            { id: 271, osmanlica: "تكيه", latin: "Tekye", meaning: "Tekke", category: "Mekan" },
-            { id: 272, osmanlica: "عهده", latin: "Uhde", meaning: "Sorumluluk, üzeri", category: "Genel" },
-            { id: 273, osmanlica: "وقف تمسكي", latin: "Vakıf Temessükü", meaning: "Vakıf senedi", category: "Vakıf" },
-            { id: 274, osmanlica: "وقف مستثنى", latin: "Vakf-ı Müstesnâ", meaning: "Özel idareli vakıf", category: "Vakıf" },
-            { id: 275, osmanlica: "ولد", latin: "Veled", meaning: "Oğul (Gayrimüslimler için)", category: "Aile" },
-            { id: 276, osmanlica: "وفاءً فراغ", latin: "Vefâen Ferâğ", meaning: "Rehinli satış", category: "Hukuk" },
-            { id: 277, osmanlica: "اولاد", latin: "Veledân", meaning: "Çocuklar (Gayrimüslimler için)", category: "Aile" },
-            { id: 278, osmanlica: "يقلامه قيدلري", latin: "Yoklama Kayıtları", meaning: "Saha inceleme tapu kayıtları", category: "Tapu" },
-            { id: 279, osmanlica: "يمين", latin: "Yemîn", meaning: "Sağ taraf", category: "Yön" },
-            { id: 280, osmanlica: "يميني", latin: "Yemîni", meaning: "Sağdaki", category: "Yön" },
-            { id: 281, osmanlica: "يساري", latin: "Yesâri", meaning: "Soldaki", category: "Yön" },
-            { id: 282, osmanlica: "يمين و يسار", latin: "Yemîn ü Yesâr", meaning: "Sağ ve sol", category: "Yön" },
-            { id: 283, osmanlica: "ضبط قيدلري", latin: "Zabıt Kayıtları", meaning: "Eski tapu kayıtları", category: "Tapu" },
-            { id: 284, osmanlica: "زاده", latin: "Zâde", meaning: "Oğul, evlat", category: "Aile" },
-            { id: 285, osmanlica: "زاويه", latin: "Zâviye", meaning: "Zaviye, küçük tekke", category: "Mekan" },
-            { id: 286, osmanlica: "ظهرى", latin: "Zahri", meaning: "Arka tarafı", category: "Yön" },
-            { id: 287, osmanlica: "زوج", latin: "Zevc", meaning: "Koca", category: "Aile" },
-            { id: 288, osmanlica: "زوجه", latin: "Zevce", meaning: "Eş, karı", category: "Aile" },
-            { id: 289, osmanlica: "ضم", latin: "Zım", meaning: "İç tarafı", category: "Yön" },
-            { id: 290, osmanlica: "نصف", latin: "Nasıf", meaning: "1/2, yarısı", category: "Matematik" },
-            { id: 291, osmanlica: "ثلث", latin: "Sülüs", meaning: "1/3 pay", category: "Matematik" },
-            { id: 292, osmanlica: "ثلثان", latin: "Sülüsan", meaning: "2/3 pay", category: "Matematik" },
-            { id: 293, osmanlica: "ربع", latin: "Rub'", meaning: "1/4 pay, çeyrek", category: "Matematik" },
-            { id: 294, osmanlica: "رابع", latin: "Râbi'", meaning: "Dördüncü", category: "Sayı" },
-            { id: 295, osmanlica: "رابعاً", latin: "Râbi'an", meaning: "Dördüncü olarak", category: "Sayı" },
-            { id: 296, osmanlica: "خمس", latin: "Hums", meaning: "1/5 pay", category: "Matematik" },
-            { id: 297, osmanlica: "سدس", latin: "Südüs", meaning: "1/6 pay", category: "Matematik" },
-            { id: 298, osmanlica: "سبع", latin: "Subu'", meaning: "1/7 pay", category: "Matematik" },
-            { id: 299, osmanlica: "ثمن", latin: "Sümün", meaning: "1/8 pay", category: "Matematik" },
-            { id: 300, osmanlica: "تسع", latin: "Tüs'", meaning: "1/9 pay", category: "Matematik" },
-            { id: 301, osmanlica: "عتيق دونم", latin: "Atik Dönüm", meaning: "Eski dönüm (918.67 m²)", category: "Ölçü" },
-            { id: 302, osmanlica: "عتيق اولك", latin: "Atik Evlek", meaning: "Eski evlek (229.66 m²)", category: "Ölçü" },
-            { id: 303, osmanlica: "ارشين قاره", latin: "Arşın kare", meaning: "0.574 m²", category: "Ölçü" },
-            { id: 304, osmanlica: "جديد دونم", latin: "Cedid Dönüm", meaning: "Yeni dönüm (2500 m²)", category: "Ölçü" },
-            { id: 305, osmanlica: "جديد اولك", latin: "Cedid Evlek", meaning: "Yeni evlek (100 m²)", category: "Ölçü" },
-            { id: 306, osmanlica: "قيراط", latin: "Kırat", meaning: "1 dm²", category: "Ölçü" },
-            { id: 307, osmanlica: "جريب", latin: "Cerip", meaning: "2067 m² alan ölçüsü", category: "Ölçü" },
-            { id: 308, osmanlica: "زيراع", latin: "Zira", meaning: "Arşın (0.57 m²)", category: "Ölçü" },
-            { id: 309, osmanlica: "فرسخ", latin: "Fersah", meaning: "5685 metre uzunluk", category: "Ölçü" },
-            { id: 310, osmanlica: "بريد", latin: "Berid", meaning: "22740 metre uzunluk", category: "Ölçü" },
-            { id: 311, osmanlica: "مرحله", latin: "Merhale", meaning: "45480 metre mesafe", category: "Ölçü" },
-            { id: 312, osmanlica: "كارا ميل", latin: "Kara Mili", meaning: "1895 metre uzunluk", category: "Ölçü" },
-            { id: 313, osmanlica: "قلاج", latin: "Kulaç", meaning: "1.895 metre uzunluk", category: "Ölçü" },
-            { id: 314, osmanlica: "ارشين", latin: "Arşın", meaning: "0.757 metre uzunluk", category: "Ölçü" },
-            { id: 315, osmanlica: "پارمق", latin: "Parmak", meaning: "3.15 cm uzunlık", category: "Ölçü" },
-            { id: 316, osmanlica: "خط", latin: "Hat", meaning: "2.63 mm uzunluk", category: "Ölçü" },
-            { id: 317, osmanlica: "نقطه", latin: "Nokta", meaning: "0.22 mm uzunluk", category: "Ölçü" },
-            { id: 318, osmanlica: "اوروب", latin: "Urup", meaning: "8.5 cm uzunluk", category: "Ölçü" },
-            { id: 319, osmanlica: "اندازه", latin: "Endaze", meaning: "65 cm uzunluk", category: "Ölçü" },
-            { id: 320, osmanlica: "اديم", latin: "Adım", meaning: "75.7 cm uzunluk", category: "Ölçü" },
-            { id: 321, osmanlica: "خطوه", latin: "Hatve", meaning: "Adım (75.7 cm)", category: "Ölçü" },
-            { id: 335, osmanlica: "مُحَرَّم", latin: "Muharrem", meaning: "Hicri takvimin 1. ayı", category: "Takvim" },
-            { id: 336, osmanlica: "صَفَر", latin: "Safer", meaning: "Hicri takvimin 2. ayı", category: "Takvim" },
-            { id: 337, osmanlica: "رَبِيعُ ٱلْأَوَّل", latin: "Rebiü'l-evvel", meaning: "Hicri takvimin 3. ayı", category: "Takvim" },
-            { id: 338, osmanlica: "رَبِيعُ ٱلْآخِر", latin: "Rebiü'l-âhir", meaning: "Hicri takvimin 4. ayı", category: "Takvim" },
-            { id: 339, osmanlica: "جُمَادَى ٱلْأُولَى", latin: "Cemâziye'l-evvel", meaning: "Hicri takvimin 5. ayı", category: "Takvim" },
-            { id: 340, osmanlica: "جُمَادَى ٱلْآخِرَة", latin: "Cemâziye'l-âhir", meaning: "Hicri takvimin 6. ayı", category: "Takvim" },
-            { id: 341, osmanlica: "رَجَب", latin: "Receb", meaning: "Hicri takvimin 7. ayı", category: "Takvim" },
-            { id: 342, osmanlica: "شَعْبَان", latin: "Şaban", meaning: "Hicri takvimin 8. ayı", category: "Takvim" },
-            { id: 343, osmanlica: "رَمَضَان", latin: "Ramazan", meaning: "Hicri takvimin 9. ayı", category: "Takvim" },
-            { id: 344, osmanlica: "شَوَّال", latin: "Şevval", meaning: "Hicri takvimin 10. ayı", category: "Takvim" },
-            { id: 345, osmanlica: "ذُو ٱلْقَعْدَة", latin: "Zilka'de", meaning: "Hicri takvimin 11. ayı", category: "Takvim" },
-            { id: 346, osmanlica: "ذُو ٱلْحِجَّة", latin: "Zilhicce", meaning: "Hicri takvimin 12. ayı", category: "Takvim" }
+        // --- 1. VERİ SETİ BURAYA EKLENECEK ---
+        // Kendi geniş veritabanını buradaki örnek formata uygun olarak değiştirebilirsin.
+        const termData = [
+            { terim: "Arz", anlam: "Bir yeri veya araziyi sunma, gösterme.", kategori: "Arazi" },
+            { terim: "Defter-i Hakani", anlam: "Osmanlı'da tapu kayıtlarının tutulduğu ana defter.", kategori: "Hukuk" },
+            { terim: "Tahrir", anlam: "Vergi, nüfus ve arazi sayımı.", kategori: "Hukuk" },
+            { terim: "Miri Arazi", anlam: "Mülkiyeti devlete ait olan topraklar.", kategori: "Arazi" },
+            { terim: "Vakıf", anlam: "Dini veya sosyal bir hizmet için ayrılan mülk.", kategori: "Hukuk" },
+            { terim: "Dönüm", anlam: "Yaklaşık 919 metrekarelik alan ölçüsü.", kategori: "Matematik" },
+            { terim: "Zira", anlam: "Yaklaşık 75-90 cm arası uzunluk ölçüsü.", kategori: "Matematik" },
+            { terim: "Muharrem", anlam: "Hicri takvimin ilk ayı.", kategori: "Takvim" },
+            { terim: "Mart", anlam: "Rumi takvimin ilk ayı.", kategori: "Takvim" },
+            { terim: "İfraz", anlam: "Bir parseli birden fazla parsele bölme işlemi.", kategori: "Arazi" }
         ];
 
-        const rumiAylar = [
-            { id: 347, osmanlica: "مارت", latin: "Mart", meaning: "Rumi takvimin 1. ayı (Mart)", category: "Takvim" },
-            { id: 348, osmanlica: "نيسان", latin: "Nisan", meaning: "Rumi takvimin 2. ayı (Nisan)", category: "Takvim" },
-            { id: 349, osmanlica: "مايس", latin: "Mayıs", meaning: "Rumi takvimin 3. ayı (Mayıs)", category: "Takvim" },
-            { id: 350, osmanlica: "حزيران", latin: "Haziran", meaning: "Rumi takvimin 4. ayı (Haziran)", category: "Takvim" },
-            { id: 351, osmanlica: "تموز", latin: "Temmuz", meaning: "Rumi takvimin 5. ayı (Temmuz)", category: "Takvim" },
-            { id: 352, osmanlica: "اغستوس", latin: "Ağustos", meaning: "Rumi takvimin 6. ayı (Ağustos)", category: "Takvim" },
-            { id: 353, osmanlica: "ايلول", latin: "Eylül", meaning: "Rumi takvimin 7. ayı (Eylül)", category: "Takvim" },
-            { id: 354, osmanlica: "تشرين اول", latin: "Teşrin-i Evvel", meaning: "Rumi takvimin 8. ayı (Ekim)", category: "Takvim" },
-            { id: 355, osmanlica: "تشرين ثاني", latin: "Teşrin-i Sânî", meaning: "Rumi takvimin 9. ayı (Kasım)", category: "Takvim" },
-            { id: 356, osmanlica: "كانون اول", latin: "Kânûn-ı Evvel", meaning: "Rumi takvimin 10. ayı (Aralık)", category: "Takvim" },
-            { id: 357, osmanlica: "كانون ثاني", latin: "Kânûn-ı Sânî", meaning: "Rumi takvimin 11. ayı (Ocak)", category: "Takvim" },
-            { id: 358, osmanlica: "شباط", latin: "Şubat", meaning: "Rumi takvimin 12. ayı (Şubat)", category: "Takvim" }
-        ];
-
-        // Verilerin Birleştirilmesi
-        const tumKelimeler = [...osmanlicaTerms, ...rumiAylar];
-
-        // Kategorileri Dinamik Oluşturma
-        const categories = ["Tümü", ...new Set(tumKelimeler.map(item => item.category))].filter(Boolean);
-
-        // Uygulama Durumu
-        let state = {
-            favorites: JSON.parse(localStorage.getItem('osmanlicaFavorites')) || [],
-            searchTerm: '',
-            currentCategory: 'Tümü',
-            quizAnswers: [],
-            quizScore: 0,
-            quizTaken: JSON.parse(localStorage.getItem('quizTaken')) || 0,
-            highestScore: JSON.parse(localStorage.getItem('highestScore')) || 0,
-            recentResults: JSON.parse(localStorage.getItem('recentResults')) || []
-        };
-        
-        // DOM Yüklendiğinde
-        document.addEventListener('DOMContentLoaded', function() {
-            initializeApp();
-        });
-        
-        function initializeApp() {
-            renderFilterButtons();
-            renderTerms(tumKelimeler);
-            renderFavorites();
-            updateStats();
-            startQuiz();
-            setupEventListeners();
-        }
-        
-        function renderFilterButtons() {
-            const filterContainer = document.getElementById('filterContainer');
-            filterContainer.innerHTML = '';
-            
-            categories.forEach(category => {
-                const button = document.createElement('button');
-                button.className = `filter-btn ${category === state.currentCategory ? 'active' : ''}`;
-                button.textContent = category;
-                button.dataset.category = category;
-                filterContainer.appendChild(button);
-            });
-        }
-        
-        // renderTerms fonksiyonu artık hedef div ID'si alabiliyor
-        function renderTerms(terms, targetContainerId = 'termsList') {
-            const container = document.getElementById(targetContainerId);
-            container.innerHTML = '';
-            
-            if (terms.length === 0) {
-                container.innerHTML = '<p style="grid-column: 1/-1; text-align: center; padding: 40px; color: #777;">Aradığınız kritere uygun terim bulunamadı.</p>';
-                return;
-            }
-            
-            terms.forEach(term => {
-                const isFavorite = state.favorites.includes(term.id);
-                const termCard = document.createElement('div');
-                termCard.className = `term-card ${isFavorite ? 'favorite' : ''}`;
-                termCard.innerHTML = `
-                    <button class="favorite-btn ${isFavorite ? 'active' : ''}" data-id="${term.id}">
-                        <i class="fas fa-star"></i>
-                    </button>
-                    <div class="term-osmanlica">${term.osmanlica}</div>
-                    <div class="term-latin">${term.latin}</div>
-                    <div class="term-meaning">${term.meaning}</div>
-                    <div class="term-category"><small>Kategori: ${term.category}</small></div>
-                `;
-                container.appendChild(termCard);
-            });
-        }
-        
-        // Favorileri doğru kutuya basması için güncellendi
-        function renderFavorites() {
-            const favoritesList = document.getElementById('favoritesList');
-            favoritesList.innerHTML = '';
-            
-            if (state.favorites.length === 0) {
-                favoritesList.innerHTML = '<p style="grid-column: 1/-1; text-align: center; padding: 40px; color: #777;">Henüz favori terim eklemediniz.</p>';
-                return;
-            }
-            
-            const favoriteTerms = tumKelimeler.filter(term => state.favorites.includes(term.id));
-            renderTerms(favoriteTerms, 'favoritesList');
-        }
-        
-        function updateStats() {
-            document.getElementById('totalTerms').textContent = tumKelimeler.length;
-            document.getElementById('favoriteCount').textContent = state.favorites.length;
-            document.getElementById('quizScoreStat').textContent = state.highestScore;
-            document.getElementById('quizTaken').textContent = state.quizTaken;
-            
-            const recentResultsContainer = document.getElementById('recentQuizResults');
-            if (state.recentResults.length === 0) {
-                recentResultsContainer.innerHTML = '<p>Henüz test sonucunuz bulunmuyor.</p>';
-            } else {
-                let html = '<div style="display: flex; flex-direction: column; gap: 10px;">';
-                state.recentResults.slice(0, 5).forEach((result, index) => {
-                    html += `
-                        <div style="background: #f8f9fa; padding: 15px; border-radius: 8px;">
-                            <strong>Test ${index + 1}:</strong> ${result.score}/10 - ${result.date}
-                        </div>
-                    `;
-                });
-                html += '</div>';
-                recentResultsContainer.innerHTML = html;
-            }
-        }
-        
-        function startQuiz() {
-            const quizQuestionContainer = document.getElementById('quizQuestionContainer');
-            const quizResult = document.getElementById('quizResult');
-            
-            quizQuestionContainer.style.display = 'block';
-            quizResult.style.display = 'none';
-            state.quizAnswers = [];
-            state.quizScore = 0;
-            
-            const quizTerms = [...tumKelimeler].sort(() => 0.5 - Math.random()).slice(0, 10);
-            
-            let quizHtml = '';
-            quizTerms.forEach((term, index) => {
-                const wrongAnswers = tumKelimeler
-                    .filter(t => t.id !== term.id)
-                    .sort(() => 0.5 - Math.random())
-                    .slice(0, 3)
-                    .map(t => t.meaning);
-                
-                const allAnswers = [term.meaning, ...wrongAnswers].sort(() => 0.5 - Math.random());
-                
-                quizHtml += `
-                    <div class="quiz-question" data-id="${term.id}">
-                        ${index + 1}. "<strong>${term.osmanlica}</strong>" (${term.latin}) Osmanlıca teriminin anlamı nedir?
-                    </div>
-                    <div class="quiz-options">
-                        ${allAnswers.map(answer => `
-                            <div class="quiz-option" data-answer="${answer}" data-correct="${answer === term.meaning}">
-                                ${answer}
-                            </div>
-                        `).join('')}
-                    </div>
-                    <hr style="margin: 30px 0; border: none; border-top: 1px solid #eee;">
-                `;
-            });
-            
-            quizHtml += `<button id="submitQuiz" class="filter-btn" style="padding: 15px 30px; font-size: 18px; margin-top: 20px;">Testi Tamamla</button>`;
-            quizQuestionContainer.innerHTML = quizHtml;
-        }
-        
-        function setupEventListeners() {
-            document.querySelectorAll('.tab').forEach(tab => {
-                tab.addEventListener('click', function() {
-                    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-                    this.classList.add('active');
-                    
-                    document.querySelectorAll('.content').forEach(content => {
-                        content.classList.remove('active');
-                    });
-                    
-                    const tabId = this.dataset.tab;
-                    document.getElementById(tabId).classList.add('active');
-                    
-                    if (tabId === 'favorites') renderFavorites();
-                    if (tabId === 'quiz') startQuiz();
-                    if (tabId === 'stats') updateStats();
-                });
-            });
-            
-            document.addEventListener('click', function(e) {
-                if (e.target.classList.contains('filter-btn') && e.target.dataset.category) {
-                    document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
-                    e.target.classList.add('active');
-                    
-                    state.currentCategory = e.target.dataset.category;
-                    performSearch();
-                }
-            });
-            
-            document.getElementById('searchBtn').addEventListener('click', performSearch);
-            document.getElementById('searchInput').addEventListener('keyup', function(e) {
-                if (e.key === 'Enter') performSearch();
-            });
-            
-            document.addEventListener('click', function(e) {
-                if (e.target.closest('.favorite-btn')) {
-                    const favoriteBtn = e.target.closest('.favorite-btn');
-                    const termId = parseInt(favoriteBtn.dataset.id);
-                    
-                    const index = state.favorites.indexOf(termId);
-                    if (index === -1) {
-                        state.favorites.push(termId);
-                        favoriteBtn.classList.add('active');
-                        favoriteBtn.closest('.term-card').classList.add('favorite');
-                    } else {
-                        state.favorites.splice(index, 1);
-                        favoriteBtn.classList.remove('active');
-                        favoriteBtn.closest('.term-card').classList.remove('favorite');
-                    }
-                    
-                    localStorage.setItem('osmanlicaFavorites', JSON.stringify(state.favorites));
-                    updateStats();
-                }
-            });
-            
-            // Quiz Şık Etkileşimi
-            document.addEventListener('click', function(e) {
-                if (e.target.classList.contains('quiz-option')) {
-                    const optionsContainer = e.target.parentNode;
-                    
-                    // Cevap verilmişse tekrar tıklanmasın
-                    if (optionsContainer.classList.contains('answered')) return;
-                    optionsContainer.classList.add('answered');
-
-                    const isCorrect = e.target.dataset.correct === 'true';
-                    
-                    if (isCorrect) {
-                        e.target.classList.add('correct');
-                    } else {
-                        e.target.classList.add('wrong');
-                        const correctOption = optionsContainer.querySelector('[data-correct="true"]');
-                        if (correctOption) correctOption.classList.add('correct');
-                    }
-                    
-                    const questionContainer = optionsContainer.previousElementSibling;
-                    const termId = parseInt(questionContainer.dataset.id);
-                    
-                    state.quizAnswers.push({
-                        termId,
-                        answer: e.target.dataset.answer,
-                        isCorrect
-                    });
-                }
-                
-                if (e.target.id === 'submitQuiz') finishQuiz();
-                if (e.target.id === 'restartQuiz') startQuiz();
-            });
-        }
-        
-        // Arama yapıldığında direkt "Tüm Terimler" ekranına geçiş yapacak şekilde güncellendi
-        function performSearch() {
-            // Arama yapıldığında aktif sekmeyi Tüm Terimler yap
-            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-            document.querySelector('[data-tab="all-terms"]').classList.add('active');
-            document.querySelectorAll('.content').forEach(c => c.classList.remove('active'));
-            document.getElementById('all-terms').classList.add('active');
-
-            const searchInput = document.getElementById('searchInput');
-            state.searchTerm = searchInput.value.trim();
-            
-            let filteredTerms = tumKelimeler;
-            
-            if (state.currentCategory !== 'Tümü') {
-                filteredTerms = filteredTerms.filter(term => term.category === state.currentCategory);
-            }
-            
-            if (state.searchTerm) {
-                const searchLower = state.searchTerm.toLocaleLowerCase('tr-TR');
-                filteredTerms = filteredTerms.filter(term => 
-                    (term.osmanlica && term.osmanlica.toLocaleLowerCase('tr-TR').includes(searchLower)) ||
-                    (term.latin && term.latin.toLocaleLowerCase('tr-TR').includes(searchLower)) ||
-                    (term.meaning && term.meaning.toLocaleLowerCase('tr-TR').includes(searchLower))
-                );
-            }
-            
-            // Tüm terimler kutusuna ('termsList') yazdır
-            renderTerms(filteredTerms, 'termsList');
-        }
-        
-        function finishQuiz() {
-            state.quizScore = state.quizAnswers.filter(answer => answer.isCorrect).length;
-            
-            if (state.quizScore > state.highestScore) {
-                state.highestScore = state.quizScore;
-                localStorage.setItem('highestScore', JSON.stringify(state.highestScore));
-            }
-            
-            state.quizTaken++;
-            localStorage.setItem('quizTaken', JSON.stringify(state.quizTaken));
-            
-            const now = new Date();
-            const dateStr = now.toLocaleDateString('tr-TR') + ' ' + now.toLocaleTimeString('tr-TR');
-            state.recentResults.unshift({
-                score: state.quizScore,
-                date: dateStr
-            });
-            
-            if (state.recentResults.length > 10) {
-                state.recentResults = state.recentResults.slice(0, 10);
-            }
-            
-            localStorage.setItem('recentResults', JSON.stringify(state.recentResults));
-            
-            const quizQuestionContainer = document.getElementById('quizQuestionContainer');
-            const quizResult = document.getElementById('quizResult');
-            const quizScore = document.getElementById('quizScore');
-            const quizMessage = document.getElementById('quizMessage');
-            
-            quizQuestionContainer.style.display = 'none';
-            quizResult.style.display = 'block';
-            quizScore.textContent = `${state.quizScore}/10`;
-            
-            if (state.quizScore >= 9) {
-                quizMessage.textContent = 'Mükemmel! Osmanlıca tapu terimlerine hakimsiniz.';
-            } else if (state.quizScore >= 7) {
-                quizMessage.textContent = 'Çok iyi! Osmanlıca tapu terimlerini iyi biliyorsunuz.';
-            } else if (state.quizScore >= 5) {
-                quizMessage.textContent = 'Orta düzeyde bilginiz var. Daha çok çalışarak geliştirebilirsiniz.';
-            } else {
-                quizMessage.textContent = 'Başlangıç seviyesindesiniz. Daha fazla terim öğrenerek gelişebilirsiniz.';
-            }
-            
-            updateStats();
-        }
+        // --- 2. TEMA VE PAYLAŞIM AYARLARI ---
         const themeBtn = document.getElementById('themeToggle');
+        
+        if (localStorage.getItem('theme') === 'dark') {
+            document.documentElement.setAttribute('data-theme', 'dark');
+            themeBtn.textContent = '☀️ Gündüz Modu';
+        }
 
-// Sayfa ilk açıldığında LocalStorage'dan eski tercihi kontrol et
-if (localStorage.getItem('theme') === 'dark') {
-    document.body.classList.add('dark-theme');
-    themeBtn.textContent = '☀️ Gündüz Modu';
-}
+        themeBtn.addEventListener('click', () => {
+            if (document.documentElement.getAttribute('data-theme') === 'dark') {
+                document.documentElement.removeAttribute('data-theme');
+                localStorage.setItem('theme', 'light');
+                themeBtn.textContent = '🌙 Gece Modu';
+            } else {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                localStorage.setItem('theme', 'dark');
+                themeBtn.textContent = '☀️ Gündüz Modu';
+            }
+        });
 
-// Butona tıklandığında temayı değiştir ve kaydet
-themeBtn.addEventListener('click', () => {
-    document.body.classList.toggle('dark-theme');
-    
-    if (document.body.classList.contains('dark-theme')) {
-        localStorage.setItem('theme', 'dark');
-        themeBtn.textContent = '☀️ Gündüz Modu';
-    } else {
-        localStorage.setItem('theme', 'light');
-        themeBtn.textContent = '🌙 Gece Modu';
-    }
-});
         function shareOnWhatsApp() {
-    const url = window.location.href; // Uygulamanın anlık linkini otomatik alır
-    const message = `Osmanlıca Tapu Terimleri Sözlüğü'ne göz at! Harika bir kaynak: ${url}`;
-    window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(message)}`);
-}
+            const url = window.location.href;
+            const message = `Osmanlıca Tapu Terimleri Sözlüğü'ne göz at! Harika bir kaynak: ${url}`;
+            window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(message)}`);
+        }
+
+        // --- 3. SEKME YÖNETİMİ ---
+        function openTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(tabName).classList.add('active');
+            event.currentTarget.classList.add('active');
+            
+            if (tabName === 'favoriler') renderFavorites();
+        }
+
+        // --- 4. SÖZLÜK, ARAMA VE FAVORİLER ---
+        let favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+
+        function toggleFavorite(terim) {
+            if (favorites.includes(terim)) {
+                favorites = favorites.filter(f => f !== terim);
+            } else {
+                favorites.push(terim);
+            }
+            localStorage.setItem('favorites', JSON.stringify(favorites));
+            renderDictionary();
+            if (document.getElementById('favoriler').classList.contains('active')) {
+                renderFavorites();
+            }
+        }
+
+        function createCardHTML(item) {
+            const isFav = favorites.includes(item.terim) ? 'active' : '';
+            const starIcon = favorites.includes(item.terim) ? '★' : '☆';
+            return `
+                <div class="card">
+                    <div>
+                        <h3>${item.terim} 
+                            <button class="fav-btn ${isFav}" onclick="toggleFavorite('${item.terim}')">${starIcon}</button>
+                        </h3>
+                        <p>${item.anlam}</p>
+                    </div>
+                    <span class="category">📁 ${item.kategori}</span>
+                </div>
+            `;
+        }
+
+        function renderDictionary(dataToRender = termData) {
+            const container = document.getElementById('dictionaryResults');
+            container.innerHTML = dataToRender.map(item => createCardHTML(item)).join('');
+        }
+
+        function renderFavorites() {
+            const container = document.getElementById('favoritesResults');
+            const favData = termData.filter(item => favorites.includes(item.terim));
+            
+            if (favData.length === 0) {
+                container.innerHTML = "<p>Henüz favorilere eklenmiş bir terim bulunmuyor.</p>";
+            } else {
+                container.innerHTML = favData.map(item => createCardHTML(item)).join('');
+            }
+        }
+
+        // Kategori Dropdown Doldurma
+        const categories = [...new Set(termData.map(item => item.kategori))];
+        const categorySelect = document.getElementById('categorySelect');
+        categories.forEach(cat => {
+            const option = document.createElement('option');
+            option.value = cat;
+            option.textContent = cat;
+            categorySelect.appendChild(option);
+        });
+
+        // Arama ve Filtreleme Dinleyicileri (Türkçe karakter uyumlu)
+        document.getElementById('searchInput').addEventListener('input', filterData);
+        document.getElementById('categorySelect').addEventListener('change', filterData);
+
+        function filterData() {
+            const searchText = document.getElementById('searchInput').value.toLocaleLowerCase('tr-TR');
+            const selectedCat = document.getElementById('categorySelect').value;
+
+            const filtered = termData.filter(item => {
+                const matchText = item.terim.toLocaleLowerCase('tr-TR').includes(searchText) || 
+                                  item.anlam.toLocaleLowerCase('tr-TR').includes(searchText);
+                const matchCat = selectedCat === "Tümü" || item.kategori === selectedCat;
+                return matchText && matchCat;
+            });
+
+            renderDictionary(filtered);
+        }
+
+        // --- 5. BİLGİ TESTİ (QUIZ) MODÜLÜ ---
+        let quizQuestions = [];
+        let currentQuestionIndex = 0;
+        let score = 0;
+
+        function startQuiz() {
+            document.getElementById('start-quiz-btn').style.display = 'none';
+            document.getElementById('quiz-result').style.display = 'none';
+            document.getElementById('quiz-area').style.display = 'block';
+            
+            // 10 Rastgele soru seç
+            let shuffled = [...termData].sort(() => 0.5 - Math.random());
+            quizQuestions = shuffled.slice(0, 10);
+            currentQuestionIndex = 0;
+            score = 0;
+            
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            document.getElementById('next-question-btn').style.display = 'none';
+            document.getElementById('quiz-feedback').textContent = '';
+            const optionsArea = document.getElementById('options-area');
+            optionsArea.innerHTML = '';
+            
+            let currentItem = quizQuestions[currentQuestionIndex];
+            document.getElementById('question-text').textContent = `Soru ${currentQuestionIndex + 1}/10: "${currentItem.terim}" teriminin anlamı nedir?`;
+
+            // Şıkları oluştur (1 doğru, 3 yanlış)
+            let options = [currentItem.anlam];
+            let wrongOptions = [...termData].filter(t => t.terim !== currentItem.terim).sort(() => 0.5 - Math.random());
+            for(let i=0; i<3 && i<wrongOptions.length; i++) {
+                options.push(wrongOptions[i].anlam);
+            }
+            options = options.sort(() => 0.5 - Math.random()); // Şıkları karıştır
+
+            options.forEach(opt => {
+                let btn = document.createElement('button');
+                btn.className = 'quiz-option';
+                btn.textContent = opt;
+                btn.onclick = () => checkAnswer(btn, opt, currentItem.anlam);
+                optionsArea.appendChild(btn);
+            });
+        }
+
+        function checkAnswer(selectedBtn, selectedText, correctText) {
+            const allBtns = document.querySelectorAll('.quiz-option');
+            allBtns.forEach(btn => btn.disabled = true); // Diğer şıklara tıklanmasın
+
+            if (selectedText === correctText) {
+                selectedBtn.classList.add('correct');
+                document.getElementById('quiz-feedback').textContent = "Tebrikler, Doğru Cevap!";
+                document.getElementById('quiz-feedback').style.color = "#2ecc71";
+                score++;
+            } else {
+                selectedBtn.classList.add('wrong');
+                document.getElementById('quiz-feedback').textContent = "Yanlış Cevap.";
+                document.getElementById('quiz-feedback').style.color = "#e74c3c";
+                // Doğru şıkkı yeşil yap
+                allBtns.forEach(btn => {
+                    if(btn.textContent === correctText) btn.classList.add('correct');
+                });
+            }
+            document.getElementById('next-question-btn').style.display = 'block';
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < quizQuestions.length) {
+                loadQuestion();
+            } else {
+                endQuiz();
+            }
+        }
+
+        function endQuiz() {
+            document.getElementById('quiz-area').style.display = 'none';
+            document.getElementById('quiz-result').style.display = 'block';
+            document.getElementById('score-text').textContent = `Toplam 10 soruda ${score} doğru cevap verdiniz!`;
+        }
+
+        // Sayfa yüklendiğinde sözlüğü oluştur
+        window.onload = renderDictionary;
     </script>
 </body>
 </html>
