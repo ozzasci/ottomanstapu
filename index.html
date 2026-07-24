@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Osmanlıca Tapu Terimleri Sözlüğü</title>
+    <button id="themeToggle" class="theme-btn">🌙 Gece Modu</button>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
@@ -390,6 +391,39 @@
                 flex-shrink: 0;
             }
         }
+        /* Karanlık tema aktifken devreye girecek renkler */
+body.dark-theme {
+    background-color: #121212;
+    color: #e0e0e0;
+}
+
+/* Kendi kullandığın div sınıflarına göre (örneğin .card, .container) buraları güncelleyebilirsin */
+body.dark-theme .container, body.dark-theme .category-btn {
+    background-color: #1e1e1e;
+    border-color: #333;
+    color: #e0e0e0;
+}
+
+body.dark-theme input {
+    background-color: #333;
+    color: #fff;
+    border: 1px solid #555;
+}
+
+.theme-btn {
+    padding: 8px 12px;
+    cursor: pointer;
+    background-color: #444;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+.theme-btn:hover {
+    background-color: #666;
+}
     </style>
 </head>
 <body>
@@ -1154,6 +1188,26 @@
             
             updateStats();
         }
+        const themeBtn = document.getElementById('themeToggle');
+
+// Sayfa ilk açıldığında LocalStorage'dan eski tercihi kontrol et
+if (localStorage.getItem('theme') === 'dark') {
+    document.body.classList.add('dark-theme');
+    themeBtn.textContent = '☀️ Gündüz Modu';
+}
+
+// Butona tıklandığında temayı değiştir ve kaydet
+themeBtn.addEventListener('click', () => {
+    document.body.classList.toggle('dark-theme');
+    
+    if (document.body.classList.contains('dark-theme')) {
+        localStorage.setItem('theme', 'dark');
+        themeBtn.textContent = '☀️ Gündüz Modu';
+    } else {
+        localStorage.setItem('theme', 'light');
+        themeBtn.textContent = '🌙 Gece Modu';
+    }
+});
     </script>
 </body>
 </html>
